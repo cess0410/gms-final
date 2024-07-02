@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['action']) && $_GET['act
                 echo "<tr>";
                 // echo "<td>" . $row["id"] . "</td>";
                 echo "<td class='specialty'  style='color: black; font-weight: 400'>" . $row["specialty"] . "</td>";
-                echo "<td><button class='editBtn btn_1'  data-id='" . $row["id"] . "'>Edit</button>
-             <button class='deleteBtn btn_1'   data-id='" . $row["id"] . "'>Delete</button></td>";
+                echo "<td class='text-right'><button class='editBtn btn btn-info'  data-id='" . $row["id"] . "'><img class='fa w-6 h-6' src='assets/svg/pencil.svg' alt=''></button>
+             <button class='deleteBtn btn btn-success'   data-id='" . $row["id"] . "'><img class='fa w-6 h-6' src='assets/svg/trash.svg' alt=''></button></td>";
                 echo "</tr>";
             }
         } else {
