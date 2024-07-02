@@ -21,7 +21,7 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 <section class=" container m-3">
     <div class="flex justify-between items-center p-4">
-        <h1 class="text-3xl font-bold text-zinc-900 ">List of Specialties</h1>
+        <h1 class="text-3xl font-bold text-zinc-900 ">List of Doctors</h1>
         <div class="flex items-center space-x-2">
             <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
             <span class="text-zinc-500 dark:text-zinc-400">02 July 2024</span>
@@ -38,7 +38,7 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
                         <div class="card-body">
                             <div class="w-full">
-                                <h1 class="text-2xl font-bold mx-auto my-5">Specialties</h1>
+                                <h1 class="text-2xl font-bold mx-auto my-5">Doctors</h1>
                                 <form id="doctorForm" class="text-left">
                                     <label>Name:</label>
                                     <input type="text" class="input input-bordered w-full  mb-3" id="name">
