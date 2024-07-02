@@ -1,0 +1,40 @@
+:root {
+    --bs-success-rgb: 71, 222, 152 !important;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    /* font-family: Apple Chancery, cursive; */
+    font-family: Mulish, sans-serif !important;
+}
+
+.btn-info.text-light:hover,
+.btn-info.text-light:focus {
+    background: #000;
+}
+
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+    border-color: #ededed !important;
+    border-style: solid;
+    border-width: 1px !important;
+}
+
+.btn-primary,
+.bg-primary,
+.bg-primary.active {
+    color: #fff;
+    background-color: green !important;
+    border-color: green !important;
+}
+
+a {
+    text-decoration: none;
+}

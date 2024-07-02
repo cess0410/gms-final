@@ -1,0 +1,1 @@
+<script src="/gms-final/assets/js/index.global.min.js"></script>
