@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2024 at 08:52 AM
+-- Generation Time: Jul 02, 2024 at 12:15 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.33
 
@@ -52,18 +52,19 @@ CREATE TABLE `schedule_list` (
   `id` int(11) NOT NULL,
   `doctor` varchar(50) NOT NULL,
   `specialty` varchar(50) NOT NULL,
-  `sched_date` varchar(50) NOT NULL,
-  `am` varchar(50) NOT NULL,
-  `pm` varchar(50) NOT NULL
+  `start_datetime` varchar(50) NOT NULL,
+  `end_datetime` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `schedule_list`
 --
 
-INSERT INTO `schedule_list` (`id`, `doctor`, `specialty`, `sched_date`, `am`, `pm`) VALUES
-(19, '4', 'Family Medicine', '2024-07-10', '08:00', '5:00'),
-(21, '15', '', '2024-07-25', '08:00', '17:00');
+INSERT INTO `schedule_list` (`id`, `doctor`, `specialty`, `start_datetime`, `end_datetime`) VALUES
+(50, '4', 'Family Medicine', '2024-07-10T08:00', '2024-07-10T17:00'),
+(51, '20', 'OB GYNE', '2024-07-25T05:58', '2024-07-25T17:58'),
+(52, '4', 'Family Medicine', '2024-07-10T08:00', '2024-07-10T17:25'),
+(53, '4', 'Family Medicine', '2024-07-10T08:00', '2024-07-10T17:30');
 
 -- --------------------------------------------------------
 
@@ -295,7 +296,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT for table `schedule_list`
 --
 ALTER TABLE `schedule_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `specialties`
