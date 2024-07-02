@@ -95,7 +95,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                         <label class="label">
                             <span class="label-text">Password</span>
                         </label>
-                        <input type="text" id="subject" name="password" class="input input-bordered" required />
+                        <input type="password" id="subject" name="password" class="input input-bordered" required />
                         <label class="label">
                             <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
                         </label>
