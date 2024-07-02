@@ -12,7 +12,6 @@
                 <div class="sidebar_icon d-lg-none">
                     <i class="ti-menu"></i>
                 </div>
-
                 <div class="line_icon open_miniSide d-none d-lg-block">
                     <img src="vendors/line_img.png" alt="">
                 </div>
@@ -21,12 +20,9 @@
                         <img src="vendors/LOGO.png" alt="#">
                         <div class="profile_info_iner">
                             <div class="profile_author_name">
-                                <!-- <p>Neurologist </p> -->
                                 <h5><?= $_SESSION['ifname'] ?></h5>
                             </div>
                             <div class="profile_info_details">
-                                <!-- <a href="#">My Profile </a> -->
-                                <!-- <a href="#">Settings</a> -->
                                 <a href="logout.php" name="logout" type="submit">Log Out </a>
                             </div>
                         </div>

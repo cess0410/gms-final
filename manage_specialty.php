@@ -13,24 +13,24 @@ if (!isset($_SESSION['iuid'])) {
     ob_end_flush();
     exit();
 }
-?>
-<?php
+
 
 $sql = "SELECT * FROM specialties";
 $result = mysqli_query($db, $sql);
 $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
 ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
-<link rel="stylesheet" href="vendors/style1.css">
-<!DOCTYPE html>
-<html lang="en">
+
+
+
+
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="vendors/style1.css">
 </head>
 <style>
     th.dt-type-numeric.dt-orderable-asc.dt-orderable-desc {
@@ -59,6 +59,19 @@ $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     .sidebar #sidebar_menu>li a {
         font-weight: 500 !important;
+    }
+
+    .btn_1 i {
+        font-size: 15px;
+        padding-right: 0px !important;
+    }
+
+    .table>:not(:last-child)>:last-child>* {
+        border-bottom-color: #00A651 !important;
+    }
+
+    a {
+        text-decoration: none !important;
     }
 </style>
 
@@ -116,16 +129,14 @@ $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                 <div class="white_card card_height_100 mb_30">
                                     <div class="white_card_body pt-3 pb-6">
                                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                            <!-- <h4 class="c-grey-900 mB-20 pb-3">Specialties</h4> -->
                                             <div id="dataTable_wrapper" class="dataTables_wrapper">
                                                 <div id="dataTable_filter" class="dataTables_filter">
-                                                    <!-- <label class="mb-5">Search:<input type="search" class="" placeholder="" aria-controls="dataTable"></label> -->
                                                 </div>
                                                 <table class="table table-striped" id="specialtyTable" role="grid" style="width: 100%;">
                                                     <thead>
                                                         <tr>
-                                                            <th style="">Specialty</th>
-                                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Action</th>
+                                                            <th style="background: #00A651 !important;color: white !important;font-weight: 700;font-size: 15px !important;vertical-align: middle !important;">Specialty</th>
+                                                            <th style="background: #00A651 !important;color: white !important;font-weight: 700;font-size: 15px !important;vertical-align: middle !important;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -134,8 +145,8 @@ $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                                 <td style="color: black; font-weight: 400"><?= $row['specialty']; ?></td>
                                                                 <!-- <td style="color: black; font-weight: 400"><?= $row['id']; ?></td> -->
                                                                 <td>
-                                                                    <button class='editBtn btn_1' data-id="<?= $row['id']; ?>">Edit</button>
-                                                                    <button class='deleteBtn btn_1' data-id="<?= $row['id']; ?>">Delete</button>
+                                                                    <button class='editBtn btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>"><i class="fas fa-edit"></i></button>
+                                                                    <button class='deleteB btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>"><i class="fas fa-trash"></i></button>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; ?>
@@ -144,184 +155,124 @@ $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                             </div>
                                         </div>
                                     </div>
-                                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-                                    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
-                                    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
-                                    <script src=""></script>
-                                    <script>
-                                        new DataTable('#specialtyTable');
-                                    </script>
-                                    <script>
-                                        $(document).ready(function() {
-                                            loadspecialty();
-                                            // Add specialty
-                                            // $("#specialtyForm").submit(function(event) {
-                                            //     event.preventDefault();
-                                            //     var name = $("#name").val();
-                                            //     var specialty = $("#specialty").val();
-                                            //     $.ajax({
-                                            //         url: "api/specialty_action.php",
-                                            //         type: "POST",
-                                            //         data: {
-                                            //             action: "add",
-                                            //             name: name,
-                                            //             specialty: specialty
-                                            //         },
-                                            //         success: function(data) {
-                                            //             $("#specialty").val('');
-                                            //             loadspecialty();
-                                            //         }
-                                            //     });
-                                            // });
-                                            // $(document).on("click", ".editBtn", function() {
-                                            //     var id = $(this).data("id");
-                                            //     var specialty = $(this).closest("tr").find(".specialty").text();
-                                            //     $("#specialtyId").val(id);
-                                            //     $("#updateSpecialty").val(specialty);
-                                            //     $("#specialtyForm").hide();
-                                            //     $("#updateForm").show();
-                                            // });
-                                            // // Cancel update (hide update form)
-                                            // $("#cancelUpdate").click(function() {
-                                            //     $("#updateForm").hide();
-                                            //     $("#specialtyForm").show();
-                                            // });
-                                            // // Update specialty
-                                            // $("#updateForm").submit(function(event) {
-                                            //     event.preventDefault();
-                                            //     var id = $("#specialtyId").val();
-                                            //     var name = $("#updateName").val();
-                                            //     var specialty = $("#updateSpecialty").val();
-                                            //     $.ajax({
-                                            //         url: "api/specialty_action.php",
-                                            //         type: "POST",
-                                            //         data: {
-                                            //             action: "update",
-                                            //             id: id,
-                                            //             specialty: specialty
-                                            //         },
-                                            //         success: function(data) {
-                                            //             $("#updateForm").hide();
-                                            //             $("#specialtyForm").show();
-                                            //             loadspecialty();
-                                            //         }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+    <script src=""></script>
+    <script>
+        new DataTable('#specialtyTable');
+    </script>
+    <script>
+        $(document).ready(function() {
+            loadspecialty();
 
-                                            //     });
-                                            // });
-                                            // // Delete specialty
-                                            // $(document).on("click", ".deleteBtn", function() {
-                                            //     var id = $(this).data("id");
-                                            //     $.ajax({
-                                            //         url: "api/specialty_action.php",
-                                            //         type: "POST",
-                                            //         data: {
-                                            //             action: "delete",
-                                            //             id: id
-                                            //         },
-                                            //         success: function(data) {
-                                            //             loadspecialty();
-                                            //         }
-                                            //     });
-                                            // });
-                                            $("#specialtyForm").submit(function(event) {
-                                                event.preventDefault();
-                                                var specialty = $("#specialty").val();
-                                                $.ajax({
-                                                    url: "api/specialty_action.php",
-                                                    type: "POST",
-                                                    data: {
-                                                        action: "add",
-                                                        name: name,
-                                                        specialty: specialty
-                                                    },
-                                                    success: function(data) {
-                                                        $("#specialty").val('');
-                                                        loadspecialty();
-                                                        Swal.fire('Success', 'Specialty added successfully', 'success');
-                                                    }
-                                                });
-                                            });
+            $("#specialtyForm").submit(function(event) {
+                event.preventDefault();
+                var specialty = $("#specialty").val();
+                $.ajax({
+                    url: "api/specialty_action.php",
+                    type: "POST",
+                    data: {
+                        action: "add",
+                        name: name,
+                        specialty: specialty
+                    },
+                    success: function(data) {
+                        $("#specialty").val('');
+                        loadspecialty();
+                        Swal.fire('Success', 'Specialty added successfully', 'success');
+                    }
+                });
+            });
 
-                                            $(document).on("click", ".deleteBtn", function() {
-                                                var id = $(this).data("id");
-                                                Swal.fire({
-                                                    title: 'Are you sure?',
-                                                    text: "You won't be able to revert this!",
-                                                    icon: 'warning',
-                                                    showCancelButton: true,
-                                                    confirmButtonColor: '#3085d6',
-                                                    cancelButtonColor: '#d33',
-                                                    confirmButtonText: 'Yes, delete it!'
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        $.ajax({
-                                                            url: "api/specialty_action.php",
-                                                            type: "POST",
-                                                            data: {
-                                                                action: "delete",
-                                                                id: id
-                                                            },
-                                                            success: function(data) {
-                                                                loadspecialty();
-                                                                Swal.fire('Deleted!', 'Specialty has been deleted.', 'success');
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            });
+            $(document).on("click", ".deleteBtn", function() {
+                var id = $(this).data("id");
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "api/specialty_action.php",
+                            type: "POST",
+                            data: {
+                                action: "delete",
+                                id: id
+                            },
+                            success: function(data) {
+                                loadspecialty();
+                                Swal.fire('Deleted!', 'Specialty has been deleted.', 'success');
+                            }
+                        });
+                    }
+                });
+            });
 
-                                            $("#updateForm").submit(function(event) {
-                                                event.preventDefault();
-                                                var id = $("#specialtyId").val();
-                                                var name = $("#updateName").val();
-                                                var specialty = $("#updateSpecialty").val();
-                                                $.ajax({
-                                                    url: "api/specialty_action.php",
-                                                    type: "POST",
-                                                    data: {
-                                                        action: "update",
-                                                        id: id,
-                                                        specialty: specialty
-                                                    },
-                                                    success: function(data) {
-                                                        $("#updateForm").hide();
-                                                        $("#specialtyForm").show();
-                                                        loadspecialty();
-                                                        Swal.fire('Success', 'Specialty updated successfully', 'success');
-                                                    }
-                                                });
-                                            });
+            $("#updateForm").submit(function(event) {
+                event.preventDefault();
+                var id = $("#specialtyId").val();
+                var name = $("#updateName").val();
+                var specialty = $("#updateSpecialty").val();
+                $.ajax({
+                    url: "api/specialty_action.php",
+                    type: "POST",
+                    data: {
+                        action: "update",
+                        id: id,
+                        specialty: specialty
+                    },
+                    success: function(data) {
+                        $("#updateForm").hide();
+                        $("#specialtyForm").show();
+                        loadspecialty();
+                        Swal.fire('Success', 'Specialty updated successfully', 'success');
+                    }
+                });
+            });
 
-                                            $(document).on("click", ".editBtn", function() {
-                                                var id = $(this).data("id");
-                                                var specialty = $(this).closest("tr").find(".specialty").text();
-                                                $("#specialtyId").val(id);
-                                                $("#updateSpecialty").val(specialty);
-                                                $("#specialtyForm").hide();
-                                                $("#updateForm").show();
-                                            });
+            $(document).on("click", ".editBtn", function() {
+                var id = $(this).data("id");
+                var specialty = $(this).closest("tr").find(".specialty").text();
+                $("#specialtyId").val(id);
+                $("#updateSpecialty").val(specialty);
+                $("#specialtyForm").hide();
+                $("#updateForm").show();
+            });
 
 
-                                            $("#cancelUpdate").click(function() {
-                                                $("#updateForm").hide();
-                                                $("#specialtyForm").show();
-                                            });
+            $("#cancelUpdate").click(function() {
+                $("#updateForm").hide();
+                $("#specialtyForm").show();
+            });
 
 
-                                            function loadspecialty() {
-                                                $.ajax({
-                                                    url: "api/specialty_action.php",
-                                                    type: "GET",
-                                                    data: {
-                                                        action: "fetch"
-                                                    },
-                                                    success: function(data) {
-                                                        $("#specialtyTable tbody").html(data);
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    </script>
-                                    <?php include('include/footer.php'); ?>
+            function loadspecialty() {
+                $.ajax({
+                    url: "api/specialty_action.php",
+                    type: "GET",
+                    data: {
+                        action: "fetch"
+                    },
+                    success: function(data) {
+                        $("#specialtyTable tbody").html(data);
+                    }
+                });
+            }
+        });
+    </script>
+    <?php include('include/footer.php'); ?>

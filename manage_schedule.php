@@ -13,89 +13,107 @@ if (!isset($_SESSION['iuid'])) {
     ob_end_flush();
     exit();
 }
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
+
+
+$queryDoctors = "SELECT d.id, d.name AS doctor_name, s.specialty AS specialty FROM doctors d LEFT JOIN specialties s ON d.specialty = s.id";
+$doctorsResult = $db->query($queryDoctors) or die($db->error);
+
+$doctorOptions = '';
+if ($doctorsResult->num_rows > 0) {
+    $doctorOptions .= '<option value="" selected>Select a doctor</option>';
+    while ($doctorRow = $doctorsResult->fetch_assoc()) {
+        $doctorOptions .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["doctor_name"] . '</option>';
+    }
+}
+
+$schedules = $db->query("SELECT d.id, d.name AS doctor, s.specialty, sl.sched_date, sl.am, sl.pm 
+                        FROM doctors d 
+                        LEFT JOIN specialties s ON d.specialty = s.id 
+                        LEFT JOIN schedule_list sl ON sl.doctor = d.id");
+$sched_res = [];
+foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
+    $row['sched_date'] = ($row['sched_date']);
+    $sched_res[$row['id']] = $row;
+    $row['doctor'] = ($row['doctor']);
+    $row['specialty'] = ($row['specialty']);
+    $row['am'] = ($row['am']);
+    $row['pm'] = ($row['pm']);
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+<?php include "include/calendar.php"; ?>
+<style>
+    .container {
+        margin: 20px;
+    }
 
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    input[type="text"] {
+        padding: 10px;
+        width: 200px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .table>:not(:last-child)>:last-child>* {
+        border-bottom: none !important;
+    }
+
+    ul {
+        padding: 0px !important;
+    }
+
+    .btn_1 i {
+        padding-right: 0px !important;
+
+    }
+
+    .btn_1 {
+        padding: 9px 15px !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #bbc1c9 !important;
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem !important;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        word-wrap: normal;
+        text-transform: none;
+        margin: 0;
+
+    }
+
+    .center-buttons {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    section.main_content.dashboard_part.large_header_bg {
+        background: #F6F7FB !important;
+    }
+</style>
 
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
-    <style>
-        .container {
-            margin: 20px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: 200px;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .table>:not(:last-child)>:last-child>* {
-            border-bottom: none !important;
-        }
-
-        ul {
-            padding: 0px !important;
-        }
-
-        .btn_1 i {
-            padding-right: 0px !important;
-
-        }
-
-        .btn_1 {
-            padding: 9px 15px !important;
-        }
-
-        .select2-container--default .select2-selection--multiple {
-            border: 1px solid #bbc1c9 !important;
-            display: block;
-            width: 100%;
-            padding: .375rem .75rem !important;
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.5;
-            color: #212529;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid #ced4da;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            border-radius: .25rem;
-            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-            word-wrap: normal;
-            text-transform: none;
-            margin: 0;
-
-        }
-
-        .center-buttons {
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-
-        section.main_content.dashboard_part.large_header_bg {
-            background: #F6F7FB !important;
-        }
-    </style>
-
-</head>
 
 
 <body class="crm_body_bg">
@@ -108,7 +126,7 @@ if (!isset($_SESSION['iuid'])) {
                     <div class="col-12">
                         <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
                             <div class="page_title_left d-flex align-items-center">
-                                <h3 class="f_s_25 f_w_700 dark_text mr_30">List of Doctors</h3>
+                                <h3 class="f_s_25 f_w_700 dark_text mr_30">Manage Schedule</h3>
                             </div>
                             <div class="page_title_right">
                                 <div class="page_date_button d-flex align-items-center">
@@ -124,192 +142,246 @@ if (!isset($_SESSION['iuid'])) {
                         <div class="white_card card_height_100 mb_30">
                             <div class="white_card_body pt-3 pb-6">
                                 <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                    <!-- <h4 class="c-grey-900 mB-20 pb-3">Specialties</h4> -->
-                                    <div id="dataTable_wrapper" class="dataTables_wrapper">
-                                        <div id="dataTable_filter" class="dataTables_filter">
-                                        </div>
-                                        <?php
-                                        $sql = "SELECT * FROM doctors";
-                                        $result = mysqli_query($db, $sql);
-                                        $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
-                                        ?>
-                                        <table id="doctorTable" class="table table-striped" role="grid" style="width: 100%;" class="mt-3">
-                                            <thead>
-                                                <tr>
-                                                    <th style="background: #00A651 !important; color: white !important; font-weight: 700">Name</th>
-                                                    <th style="background: #00A651 !important; color: white !important; font-weight: 700">Specialty</th>
-                                                    <th style="background: #00A651 !important; color: white !important; font-weight: 700">Schedule</th>
-                                                    <th style="background: #00A651 !important; color: white !important; font-weight: 700">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($doctors as $row) : ?>
-                                                    <tr>
-                                                        <td style="color: black; font-weight: 500"><?= $row['name']; ?></td>
-                                                        <?php
-                                                        $sql = "SELECT * FROM `specialties` WHERE id = '{$row['specialty']}'";
-                                                        $result1 = $db->query($sql);
-
-                                                        if ($result1 && $result1->num_rows > 0) {
-                                                            $specialty_row = $result1->fetch_assoc();
-                                                            $specialty_name = $specialty_row['specialty'];
-                                                            echo "<td style='color: black; font-weight: 400'>$specialty_name</td>";
-                                                        }
-                                                        ?>
-                                                        <td style="color: black; font-weight: 500"><?= $row['month']; ?><?= $row['day']; ?><?= $row['time']; ?>
-                                                        </td>
-                                                        <td>
-                                                            <button class='editBtn btn_1 mb-1' data-id="<?= $row['id']; ?>"><i class="fas fa-edit"></i></button>
-                                                            <button class='deleteBtn btn_1 mb-1' data-id="<?= $row['id']; ?>"><i class="fas fa-trash"></i></button>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <div id="calendar"></div>
                                 </div>
                             </div>
-                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-                            <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
-                            <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
-
-                            <script>
-                                new DataTable('#doctorTable');
-                            </script>
                         </div>
-
                     </div>
-
-
                     <div class="col-lg-5">
+
                         <div class="white_card">
-                            <!-- <div class="white_card_header">
-                                <div class="box_header m-0">
-                                    <div class="main-title">
-                                       <h3 class="m-0">Doctors</h3> 
+                            <div class="white_card_body">
+                                <div class="container">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-4">
+                                            <div class="main-title">
+                                                <h3 class="m-0"></h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="row justify-content-end">
+                                                <div class="col-lg-8 d-flex justify-content-end">
+                                                    <button class="btn_1" onclick="location.reload()">Refresh</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="api/schedule_action.php" method="post" id="schedule-form">
+                                        <div class="input-group">
+                                            <div class="input-group-text">
+                                                <span>Doctor</span>
+                                            </div>
+                                            <select class="form-select" id="doctor" name="doctor" required>
+                                                <?php echo $doctorOptions; ?>
+                                            </select>
+                                        </div>
+
+                                        <div id="specialtyField" style="display: none;">
+                                            <div class="input-group mt-3">
+                                                <div class="input-group-text">
+                                                    <span>Specialty</span>
+                                                </div>
+                                                <input class="form-control" id="specialty" name="specialty" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mt-3">
+                                            <div class="input-group-text">
+                                                <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
+                                            </div>
+                                            <input type="date" class="form-control form-control-sm rounded-0" name="sched_date" id="sched_date">
+                                        </div>
+                                        <div class="input-group mt-3">
+                                            <div class="input-group-text">
+                                                <span>Start Time</span>
+                                            </div>
+                                            <input type="time" class="form-control form-control-sm rounded-0" name="am" id="am" pattern="(?:1[012]|0?[1-9]):[0-5][0-9] (?:AM|PM)">
+
+                                        </div>
+                                        <div class="input-group mt-3">
+                                            <div class="input-group-text">
+                                                <span>End Time</span>
+                                            </div>
+                                            <input type="time" class="form-control form-control-sm rounded-0" name="pm" id="pm" pattern="(?:1[012]|0?[1-9]):[0-5][0-9] (?:AM|PM)">
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-center">
+                                        <button class="btn btn-primary btn-sm rounded-0" type="submit" form="schedule-form"><i class="fa fa-save"></i> Save</button>
+                                        <button class="btn btn-default border btn-sm rounded-0" type="reset" form="schedule-form"><i class="fa fa-reset"></i> Cancel</button>
                                     </div>
                                 </div>
-                            </div>-->
-                            <div class="white_card_body">
-                                <form id="submitForm">
-                                    <label class="mt-3">Doctor:</label>
-                                    <!-- <select class="form-control specialty" name="specialty" multiple="multiple"> -->
-                                    <?php $doctorOptionsString = '';
-                                    $queryDoctors = "SELECT * FROM doctors;";
-                                    $doctorsResult = $db->query($queryDoctors) or die($db->error);
-
-                                    if ($doctorsResult->num_rows > 0) {
-                                        while ($doctorRow = $doctorsResult->fetch_assoc()) {
-                                            $doctorOptionsString .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["name"] . '</option>';
-                                        }
-                                    } else {
-                                        $doctorOptionsString .= '<option value="">No doctors found for this specialty</option>';
-                                    }
-                                    echo '<div class="input-group mt-3">
-            <div class="input-group-text">
-            <span class="">Doctor</span>
-        </div>
-                <select class="form-select" id="specialty">';
-                                    echo $doctorOptionsString;
-                                    echo '</select>
-            </div>'; ?>
-
-                                    <label class="mb-2 mt-2">Specialty:</label>
-                                    <!-- <select class="form-control specialty" name="specialty" multiple="multiple"> -->
-                                    <select class="form-control specialty" name="specialty">
-                                        <?php
-
-                                        $sql = "SELECT * FROM specialties LEFT JOIN doctors ON doctors.specialty = specialties.id";
-                                        $result = mysqli_query($db, $sql);
-
-
-                                        if (!$result) {
-                                            echo "<option value=''>Error retrieving data</option>";
-                                        } else {
-                                            if (mysqli_num_rows($result) > 0) {
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    echo "<option value='" . $row[' id'] . "'>" . $row['specialty'] . "</option>";
-                                                }
-                                            } else {
-                                                echo "<option value=''>No Record</option>";
-                                            }
-                                        }
-
-                                        ?>
-                                    </select>
-
-
-                                    <label class="mb-2 mt-2">Select Multiple Dates in the Calendar</label>
-                                    <input type="text" class="form-control" id="dates" name="dates" style="width: 565px;" onselect="select()">
-
-                                    <div id="datetime" class="center-buttons mt-2" style="display: none;">
-                                        <label class="mt-2">AM:</label>
-                                        <input type="time" class="form-control" id="am" name="am">
-                                        <label class="mt-2">PM:</label>
-                                        <input type="time" class="form-control" id="pm" name="pm">
-                                    </div>
-
-                                    <script type="text/javascript">
-                                        function select() {
-
-                                            document.getElementById("dates").addEventListener("change", function() {
-                                                    var datetime = document.getElementById("datetime");
-                                                    if (this.value !== "") {
-                                                        datetime.style.display = "block";
-                                                    } else {
-                                                        datetime.style.display = "none";
-                                                    }
-                                                }
-
-                                            );
-                                        }
-
-
-
-                                        document.getElementById("dates").addEventListener("change", function() {
-                                            var datetime = document.getElementById("datetime");
-                                            if (this.value !== "") {
-                                                datetime.style.display = "block";
-                                            } else {
-                                                datetime.style.display = "none";
-                                            }
-
-                                        });
-                                    </script>
-                                    <div class="center-buttons">
-                                        <button type="submit" class="btn_1 mt-3" style="margin-right: 5px!important"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add</button>
-                                    </div>
-                                </form>
-
                             </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+        </div>
+        <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="event-details-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header rounded-0">
+                        <h5 class="modal-title">Schedule Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body rounded-0">
+                        <div class="container-fluid">
+                            <dl>
+                                <dt class="text-muted">Specialty</dt>
+                                <dd id="specialty"></dd>
+                                <dt class="text-muted">Date</dt>
+                                <dd id="sched_date" class=""></dd>
+                                <dt class="text-muted">Start Time</dt>
+                                <dd id="am" class=""></dd>
+                                <dt class="text-muted">End Time</dt>
+                                <dd id="pm" class=""></dd>
+                            </dl>
                         </div>
                     </div>
-
+                    <div class="modal-footer rounded-0">
+                        <div class="text-end">
+                            <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit" data-id="" style="border-radius: 5px!important;">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete" data-id="" style="border-radius: 5px!important;">Delete</button>
+                            <button type="button" class="btn btn-secondary btn-sm rounded-0" data-bs-dismiss="modal" style="border-radius: 5px!important;">Close</button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#dates').datepicker({
-                format: 'yyyy-mm-dd',
-                multidate: true,
-                todayHighlight: true
+        $('#doctor').change(function() {
+            var doctorId = $(this).val();
+
+
+            // Fetch doctor schedule via AJAX
+            $.ajax({
+                url: 'api/get_doctor_schedule.php',
+                type: 'GET',
+                data: {
+                    doctor_id: doctorId
+                },
+                success: function(response) {
+                    events = response;
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(events);
+                    calendar.refetchEvents();
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching doctor schedule: ' + error);
+                }
             });
         });
+
+        // Initial calendar setup with empty events
     </script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script> -->
 
 
+    <script>
+        var scheds = <?= json_encode($sched_res) ?>;
+        var calendar;
+        var Calendar = FullCalendar.Calendar;
+        var events = [];
+        var ids = [];
 
 
+        $(function() {
+            if (!!scheds) {
+                Object.keys(scheds).forEach(k => {
+                    var row = scheds[k];
+                    var key = row.sched_date + '_' + row.specialty;
+                    events.push({
+                        id: row.id,
+                        title: row.doctor,
+                        specialty: row.specialty,
+                        start: row.sched_date + 'T' + row.am,
+                        end: row.sched_date + 'T' + row.pm.replace('T', ' '),
+                    });
+                });
+
+                var date = new Date();
+                var d = date.getDate(),
+                    m = date.getMonth(),
+                    y = date.getFullYear();
+
+                calendar = new Calendar(document.getElementById('calendar'), {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        right: 'dayGridMonth,dayGridWeek,list',
+                        center: 'title',
+                    },
+                    selectable: true,
+                    themeSystem: 'bootstrap',
+                    events: events,
+                    eventClick: function(info) {
+                        // Fetch specialty via AJAX
+                        // $.ajax({
+                        //     url: 'api/get_specialty.php',
+                        //     type: 'GET',
+                        //     data: {
+                        //         doctor_id: doctorId
+                        //     },
+                        //     success: function(response) {
+                        //         $('#specialty').val(response);
+                        //         $('#specialtyField').show();
+                        //         console.log('Specialty received: ' + response);
+                        //     },
+                        //     error: function(xhr, status, error) {
+                        //         console.log('Error fetching specialty: ' + error);
+                        //     }
+                        // });
 
 
-</body>
+                    },
+                    eventDidMount: function(info) {},
+                });
 
-</html>
+                calendar.render();
+
+            }
+        });
+    </script>
+    <script>
+        var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
+    </script>
+    <script>
+        // $(document).ready(function() {
+        //     $('#doctor').change(function() {
+        //         var doctorId = $(this).val();
+
+        //         $.ajax({
+        //             url: 'api/get_specialty.php',
+        //             type: 'GET',
+        //             data: {
+        //                 doctor_id: doctorId
+        //             },
+        //             success: function(response) {
+        //                 $('#specialty').val(response);
+        //                 $('#specialtyField').show();
+        //                 console.log('Specialty received: ' + response);
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.log('Error: ' + error);
+        //             }
+        //         });
+        //     });
+        // });
+    </script>
+    <script src="js/sched_script.js"></script>
+
+
+    <?php include('include/footer.php'); ?>

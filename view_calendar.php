@@ -21,47 +21,18 @@ if (!isset($_SESSION['iuid'])) {
         display: none;
     }
 
-    div#page-container,
-    .main_content {
-        background: #F6F7FB !important;
-        margin-left: 5px !important;
-    }
-
-    .fc-daygrid-dot-event .fc-event-title {
-        /* color: black !important; */
-    }
-
-    .fc-day-grid-event .fc-content,
-    .fc-daygrid-dot-event .fc-event-title {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        height: 25px !important;
-        line-height: 25px !important;
-        padding: 0 10px !important;
-        color: black !important;
-        font-size: 12px !important;
-        text-transform: capitalize !important;
-        font-weight: 700 !important;
-        font-size: 13px !important;
-    }
-
-    .fc-theme-bootstrap a:not([href]) {
-        color: black !important;
-    }
-
-    ul {
-        margin: 0px !important;
-        padding: 0px !important;
+    ul#sidebar_menu {
+        padding-left: 0px !important;
     }
 </style>
 
-<body class="crm_body_bg" style="background: #F6F7FB !important;">
+<body class="crm_body_bg" style="background:#F6F7FB!important">
     <section class="main_content dashboard_part large_header_bg">
         <?php include 'include/header-2.php'; ?>
-        <div class="container py-5" id="page-container">
+        <div class="container py-2" id="page-container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div id="calendar" style="margin-left: 50px; "></div>
+                    <div id="calendar"></div>
                 </div>
 
             </div>
@@ -143,8 +114,6 @@ if (!isset($_SESSION['iuid'])) {
 
                 })
             </script>
-        </div>
-        </div>
         </div>
     </section>
 </body>

@@ -8,19 +8,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $rescheduled = isset($_POST['rescheduled']) ? $db->real_escape_string($_POST['rescheduled']) : '';
     $diagnose = isset($_POST['diagnose']) ? $db->real_escape_string($_POST['diagnose']) : '';
     $end_datetime = isset($_POST['end_datetime']) ? $db->real_escape_string($_POST['end_datetime']) : '';
+    $end_month = isset($_POST['end_month']) ? $db->real_escape_string($_POST['end_month']) : '';
+    $end_year = isset($_POST['end_year']) ? $db->real_escape_string($_POST['end_year']) : '';
+    $rescheduled_id = isset($_POST['rescheduled_id']) ? $db->real_escape_string($_POST['rescheduled_id']) : '';
 
-    // Validate $_POST['id'] to prevent SQL injection
+
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
     if ($status === "Rescheduled") {
-        $sql = "UPDATE tblinquiry SET doctor=?, status=?, rescheduled=?, diagnose=?, end_datetime=? WHERE id=?";
+        $sql = "UPDATE tblinquiry SET doctor=?, status=?, rescheduled=?, diagnose=?, end_datetime=?,end_month=?, end_year=? WHERE id=?";
         $stmt = $db->prepare($sql);
 
         if (!$stmt) {
             die('Prepare failed: ' . $db->error);
         }
 
-        $stmt->bind_param("sssssi", $doctor, $status, $rescheduled, $diagnose, $end_datetime, $id);
+        $stmt->bind_param("ssssiiii", $doctor, $status, $rescheduled, $diagnose, $end_datetime, $end_month, $end_year, $id);
+        $stmt->execute();
+
+        if ($stmt->error) {
+            die('Execute error: ' . $stmt->error);
+        }
+
+        $stmt->close();
+
+        $sql = "INSERT INTO tblinquiry (status, rescheduled,rescheduled_id) VALUES (?,?,?)";
+        $stmt = $db->prepare($sql);
+
+        if (!$stmt) {
+            die('Prepare failed: ' . $db->error);
+        }
+
+        $stmt->bind_param("iii", $status, $rescheduled, $rescheduled_id);
         $stmt->execute();
 
         if ($stmt->error) {
@@ -29,14 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $stmt->close();
     } else {
-        $sql = "UPDATE tblinquiry SET doctor=?, status=?, diagnose=?, end_datetime=? WHERE id=?";
+        $sql = "UPDATE tblinquiry SET doctor=?, status=?, diagnose=?, end_datetime=?, end_month=?, end_year=? WHERE id=?";
         $stmt = $db->prepare($sql);
 
         if (!$stmt) {
             die('Prepare failed: ' . $db->error);
         }
 
-        $stmt->bind_param("ssssi", $doctor, $status, $diagnose, $end_datetime, $id);
+        $stmt->bind_param("ssssiii", $doctor, $status, $diagnose, $end_datetime, $end_month, $end_year, $id);
         $stmt->execute();
 
         if ($stmt->error) {

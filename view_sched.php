@@ -63,106 +63,112 @@ if (!isset($_SESSION['iuid'])) {
     }
 </style>
 
-<body class="bg-light">
-    <div class="container py-5" id="page-container">
-        <div class="row">
-            <div class="col-md-8">
-                <div id="calendar" style="background: #F6F7FB!important;"></div>
-            </div>
-            <?php
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
-                $result = $db->query($sql);
-                echo ' 
-             <div class="col-md-4">
-                    <div class="cardt rounded-0 shadow">
-                        <div class="card-header bg-gradient bg-primary text-light">
-                        </div>
-                    <div class="card-body">
-                        <div class="container-fluid">
-                        <form id="add">
+<body class="crm_body_bg">
+    <section class="main_content dashboard_part large_header_bg">
+        <?php include 'include/header-2.php'; ?>
+        <div class="container-fluid p-0 ">
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="white_card_body ">
+                        <div class="container py-2" id="page-container">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div id="calendar" style="background: #F6F7FB!important;"></div>
+                                </div>
+                                <?php
+                                if (isset($_GET['id'])) {
+                                    $id = $_GET['id'];
+                                    $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
+                                    $result = $db->query($sql);
+                                    echo '       <div class="col-md-4"><form id="add">
+      
+                <div class="cardt rounded-0 shadow">
+                    <div class="card-header bg-gradient bg-primary text-light">
+                    </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        
                             <input type="hidden" name="id" value="">';
-                if ($result && $result->num_rows > 0) {
-                    $row = $result->fetch_assoc();
-                    $consultdate = $row['consultdate'];
-                    $consultmonth = $row['consultmonth'];
-                    $consultyear = $row['consultyear'];
-                    $receiver = $row['receiver'];
-                    $mode = $row['mode'];
-                    $name = $row['name'];
-                    $type = $row['type'];
-                    $contact_no = $row['contact_no'];
-                    $specialty = $row['specialty'];
-                    $remarks = $row['remarks'];
-                    $start_datetime = $row['start_datetime'];
-                    $doctor = $row['doctor'];
-                    $status = $row['status'];
-                    $diagnose = $row['diagnose'];
-                    $rescheduled = $row['rescheduled'];
-                    $end_datetime = $row['end_datetime'];
-                    $end_month = $row['end_month'];
-                    $end_year = $row['end_year'];
-                    echo "<div class='input-group mb-4 mt-2'>
+                                    if ($result && $result->num_rows > 0) {
+                                        $row = $result->fetch_assoc();
+                                        $consultdate = $row['consultdate'];
+                                        $consultmonth = $row['consultmonth'];
+                                        $consultyear = $row['consultyear'];
+                                        $receiver = $row['receiver'];
+                                        $mode = $row['mode'];
+                                        $name = $row['name'];
+                                        $type = $row['type'];
+                                        $contact_no = $row['contact_no'];
+                                        $specialty = $row['specialty'];
+                                        $remarks = $row['remarks'];
+                                        $start_datetime = $row['start_datetime'];
+                                        $doctor = $row['doctor'];
+                                        $status = $row['status'];
+                                        $diagnose = $row['diagnose'];
+                                        $rescheduled = $row['rescheduled'];
+                                        $end_datetime = $row['end_datetime'];
+                                        $rescheduled_id = $row['rescheduled_id'];
+
+                                        echo "<div class='input-group mb-4 mt-2'>
         <div class='input-group-text'>
         <span class=''>Consult Date</span></div>";
-                    echo '<input type="text" class="form-control" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>';
+                                        echo '<input type="text" class="form-control" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>';
 
-                    echo  '<input type="hidden" class="form-control" name="consultmonth" id="consultmonth" value="' . date('m') . '">
+                                        echo  '<input type="hidden" class="form-control" name="consultmonth" id="consultmonth" value="' . date('m') . '">
                     <input type="hidden" class="form-control" name="consultyear" id="consultyear" value="' . date('Y') . '">';
 
-                    echo "<div class='input-group mt-3'>
+                                        echo "<div class='input-group mt-3'>
                 <div class='input-group-text'>
                     <span class=''>Schedule</span>
                 </div>
-                <input type='datetime-local' class='form-control form-control-sm rounded-0'name='start_datetime' id='start_datetime' value='" . $start_datetime . "' readonly>
+                <input type='datetime-local' class='form-control' name='start_datetime' id='start_datetime' value='" . $start_datetime . "' readonly>
             </div>";
 
-                    echo '<div class="mb-3">
+                                        echo '<div class="mb-3">
             <input value="' . $consultmonth . '" name="consultmonth" class="form-control" hidden>
         </div>';
-                    echo '<div class="mb-3">
+                                        echo '<div class="mb-3">
         <input value="' . $consultyear . '" name="consultyear" class="form-control" hidden>
     </div>';
 
-                    echo "<div class='input-group mt-3'>
+                                        echo "<div class='input-group mt-3'>
         <div class='input-group-text'>
         <span class=''>Name</span></div>";
-                    echo "<input value='$name' name='name' class='form-control' readonly>";
+                                        echo "<input value='$name' name='name' class='form-control' readonly>";
 
-                    echo "<div class='input-group mt-3'>
+                                        echo "<div class='input-group mt-3'>
         <div class='input-group-text'>
         <span class=''>Contact Number</span></div>";
-                    echo "<input value='$contact_no' name='contact_no' class='form-control' readonly>";
+                                        echo "<input value='$contact_no' name='contact_no' class='form-control' readonly>";
 
-                    echo "<div class='input-group mt-3'>";
-                    echo "<label class='input-group-text' for='specialty'>Specialty</label>";
-                    echo "<select class='form-select' id='specialty' name='specialty' disabled>";
-                    $sql = "SELECT * FROM `specialties`";
-                    $result1 = $db->query($sql);
+                                        echo "<div class='input-group mt-3'>";
+                                        echo "<label class='input-group-text' for='specialty'>Specialty</label>";
+                                        echo "<select class='form-select' id='specialty' name='specialty' disabled>";
+                                        $sql = "SELECT * FROM `specialties`";
+                                        $result1 = $db->query($sql);
 
-                    if ($result1 && $result1->num_rows > 0) {
-                        while ($specialty_row = $result1->fetch_assoc()) {
-                            $specialty_id = $specialty_row['id'];
-                            $specialty_name = $specialty_row['specialty'];
-                            $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
-                            echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
-                        }
-                    }
-                    echo '</select>';
-                    echo "</div>";
-                    echo '<div class="input-group mt-3">
+                                        if ($result1 && $result1->num_rows > 0) {
+                                            while ($specialty_row = $result1->fetch_assoc()) {
+                                                $specialty_id = $specialty_row['id'];
+                                                $specialty_name = $specialty_row['specialty'];
+                                                $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
+                                                echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
+                                            }
+                                        }
+                                        echo '</select>';
+                                        echo "</div>";
+                                        echo '<div class="input-group mt-3">
                 <div class="input-group-text">
                     <span class="">Remarks</span>
                 </div>
                 <textarea class="form-control" id="remarks" aria-label="With textarea" disabled>' . $remarks . '</textarea>
             </div>';
 
-                    echo ' </div>';
+                                        echo ' </div>';
 
 
 
-                    echo '<div class="input-group mt-3">
+                                        echo '<div class="input-group mt-3">
     <div class="input-group-text">
     <span class="">Status</span>
 </div>
@@ -183,118 +189,122 @@ if (!isset($_SESSION['iuid'])) {
         </div>
     </div>';
 
-                    $doctorOptionsString = '';
-                    $specialty = $row['specialty'];
-                    $queryDoctors = "SELECT * FROM doctors WHERE specialty = '$specialty';";
-                    $doctorsResult = $db->query($queryDoctors) or die($db->error);
+                                        $doctorOptionsString = '';
+                                        $specialty = $row['specialty'];
+                                        $queryDoctors = "SELECT * FROM doctors WHERE specialty = '$specialty';";
+                                        $doctorsResult = $db->query($queryDoctors) or die($db->error);
 
-                    if ($doctorsResult->num_rows > 0) {
-                        while ($doctorRow = $doctorsResult->fetch_assoc()) {
-                            $doctorOptionsString .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["name"] . '</option>';
-                        }
-                    } else {
-                        $doctorOptionsString .= '<option value="">No doctors found for this specialty</option>';
-                    }
-                    echo '<div id="doctorField" style="display: none;"><div class="input-group mt-3">
+                                        if ($doctorsResult->num_rows > 0) {
+                                            while ($doctorRow = $doctorsResult->fetch_assoc()) {
+                                                $doctorOptionsString .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["name"] . '</option>';
+                                            }
+                                        } else {
+                                            $doctorOptionsString .= '<option value="">No doctors found for this specialty</option>';
+                                        }
+                                        echo '<div id="doctorField" style="display: none;"><div class="input-group mt-3">
 <div class="input-group-text">
 <span class="">Doctor</span>
 </div>
 <select class="form-select" id="specialty" name="doctor">';
-                    echo $doctorOptionsString;
-                    echo '</select>
+                                        echo $doctorOptionsString;
+                                        echo '</select>
 
 </div></div>';
 
 
 
-                    echo ' <div id="diagnoseField" style="display: none;">
+                                        echo ' <div id="diagnoseField" style="display: none;">
                     <div class="input-group mt-3">
     <div class="input-group-text">
     <span class="">Diagnose</span>
 </div><textarea id="diagnose" class="form-control" name="diagnose">' . $diagnose . '</textarea>
 </div></div>';
-                    echo '
+                                        echo '
                     <div id="attendedField" style="display: none;">
                         <div class="input-group mt-3">
                             <div class="input-group-text">
                                 <span class="">End Date</span>
                             </div>
                             <input type="datetime-local" class="form-control" id="end_datetime" name="end_datetime" onclick="checkScheduleDate()" value="' . $end_datetime . '" >';
-                    echo  '<input type="hidden" class="form-control" name="end_month" id="end_month" value="' . $end_month . '">
-                    <input type="hidden" class="form-control" name="end_year" id="end_year" value="' . $end_year . '">';
-                }
-                echo '</div>
+                                        $end_month = date('m', strtotime($end_datetime));
+                                        $end_year = date('Y', strtotime($end_datetime));
+                                        echo '<input type="hidden" class="form-control" id="end_month" name="end_month" value="' . $end_month . '">';
+                                        echo '<input type="hidden" class="form-control" id="end_year" name="end_year" value="' . $end_year . '">';
+                                        $rescheduled_id = $row['id'];
+                                        echo '<input type="hidden" class="form-control" id="rescheduled_id" name="rescheduled_id" value="' . $rescheduled_id . '">';
+                                    }
+                                    echo '</div>
                     </div>  
 </div>
 </div>
 </form>  ';
-                echo '<div class="card-footer mt-3">
+                                    echo '<div class="card-footer mt-3">
             <div class="text-center">
                 
                 
                     <input type="hidden" name="id" value="' . (isset($_GET['id']) ? $_GET['id'] : '') . '">';
 
-                echo '<button class="btn btn-primary btn-sm rounded-0" type="submit" onclick="window.location.href=\'list_inquiries.php\'"><i class="fa fa-save"></i> Save</button>';
+                                    echo '<button class="btn btn-primary btn-sm rounded-0" type="submit" onclick="window.location.href=\'list_inquiries.php\'"><i class="fa fa-save"></i> Save</button>';
 
-                echo '<a class="btn btn-default border btn-sm rounded-0" onclick="window.history.back();"><i class="fa fa-reset"></i> Cancel</a>';
-                echo '
+                                    echo '<a class="btn btn-default border btn-sm rounded-0" onclick="window.history.back();"><i class="fa fa-reset"></i> Cancel</a>';
+                                    echo '
             </div>
         </div>';
-            }
+                                }
 
-            ?>
+                                ?>
 
-
-        </div>
-    </div>
-    <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="event-details-modal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-0">
-                <div class="modal-header rounded-0">
-                    <?php
-                    if (isset($_GET['id'])) {
-                        $id = $_GET['id'];
-                        $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
-                        $result = $db->query($sql);
-                        if ($result && $result->num_rows > 0) {
-                            $row = $result->fetch_assoc();
-                            $consultdate = $row['consultdate'];
-                            $receiver = $row['receiver'];
-                            $mode = $row['mode'];
-                            $endorsement = $row['endorsement'];
-                            $name = $row['name'];
-                            $type = $row['type'];
-                            $birthdate = $row['birthdate'];
-                            $age = $row['age'];
-                            $gender = $row['gender'];
-                            $contact_no = $row['contact_no'];
-                            $specialty_id = $row['specialty'];
-                            $remarks = $row['remarks'];
-                            $start_datetime = $row['start_datetime'];
-                            echo "<h5 class='modal-title'>Details of &nbsp;<h5 class='modal-title' style='font-weight: 900'>$name</h5></h5>";
-                            echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="event-details-modal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-0">
+                                <div class="modal-header rounded-0">
+                                    <?php
+                                    if (isset($_GET['id'])) {
+                                        $id = $_GET['id'];
+                                        $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
+                                        $result = $db->query($sql);
+                                        if ($result && $result->num_rows > 0) {
+                                            $row = $result->fetch_assoc();
+                                            $consultdate = $row['consultdate'];
+                                            $receiver = $row['receiver'];
+                                            $mode = $row['mode'];
+                                            $endorsement = $row['endorsement'];
+                                            $name = $row['name'];
+                                            $type = $row['type'];
+                                            $birthdate = $row['birthdate'];
+                                            $age = $row['age'];
+                                            $gender = $row['gender'];
+                                            $contact_no = $row['contact_no'];
+                                            $specialty_id = $row['specialty'];
+                                            $remarks = $row['remarks'];
+                                            $start_datetime = $row['start_datetime'];
+                                            echo "<h5 class='modal-title'>Details of &nbsp;<h5 class='modal-title' style='font-weight: 900'>$name</h5></h5>";
+                                            echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body rounded-0">
                     <div class="container-fluid">
                         <dl>';
 
-                            $sql_specialty = "SELECT specialty FROM specialties WHERE id = '$specialty_id'";
-                            $result_specialty = $db->query($sql_specialty);
-                            $specialty_name = "";
-                            if ($result_specialty && $result_specialty->num_rows > 0) {
-                                $row_specialty = $result_specialty->fetch_assoc();
-                                $specialty_name = $row_specialty['specialty'];
-                            }
-                            $gender_label = '';
-                            if ($gender === 'Male') {
-                                $gender_label = 'Male';
-                            } elseif ($gender === 'Female') {
-                                $gender_label = 'Female';
-                            } else {
-                                $gender_label = 'Others';
-                            }
+                                            $sql_specialty = "SELECT specialty FROM specialties WHERE id = '$specialty_id'";
+                                            $result_specialty = $db->query($sql_specialty);
+                                            $specialty_name = "";
+                                            if ($result_specialty && $result_specialty->num_rows > 0) {
+                                                $row_specialty = $result_specialty->fetch_assoc();
+                                                $specialty_name = $row_specialty['specialty'];
+                                            }
+                                            $gender_label = '';
+                                            if ($gender === 'Male') {
+                                                $gender_label = 'Male';
+                                            } elseif ($gender === 'Female') {
+                                                $gender_label = 'Female';
+                                            } else {
+                                                $gender_label = 'Others';
+                                            }
 
-                            echo '
+                                            echo '
                                     <div class="row">
     <div class="col-md-6">
         <dl class="dl-horizontal">
@@ -331,37 +341,38 @@ if (!isset($_SESSION['iuid'])) {
     </div>
 </div>
                                 ';
-                        }
-                    }
-                    ?>
-                    </dl>
+                                        }
+                                    }
+                                    ?>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="modal-footer rounded-0">
+                                <div class="text-end">
+                                    <button class='btn_1 mb-2' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToUpdate(<?= $row['id']; ?>)"><i class="fas fa-edit"></i></button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer rounded-0">
-                <div class="text-end">
-                    <button class='btn_1 mb-2' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToUpdate(<?= $row['id']; ?>)"><i class="fas fa-edit"></i></button>
+                <?php
+                $schedules = $db->query("SELECT id, name, specialty, start_datetime FROM `tblinquiry` WHERE id = $id");
 
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-    <?php
-    $schedules = $db->query("SELECT id, name, specialty, start_datetime FROM `tblinquiry` WHERE id = $id");
+                if ($schedules === false) {
+                    die("Error executing query: " . $db->error);
+                }
+                $sched_res = [];
 
-    if ($schedules === false) {
-        die("Error executing query: " . $db->error);
-    }
-    $sched_res = [];
+                foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
+                    $row['sdate'] = date("F d, Y h:i A", strtotime($row['start_datetime']));
 
-    foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
-        $row['sdate'] = date("F d, Y h:i A", strtotime($row['start_datetime']));
-
-        $sched_res[$row['id']] = $row;
-    }
-    ?>
+                    $sched_res[$row['id']] = $row;
+                }
+                ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $end_month = date('m', strtotime($end_datetime));
     $end_year = date('Y', strtotime($end_datetime));
@@ -491,7 +502,7 @@ if (!isset($_SESSION['iuid'])) {
                 var id = info.event.id
                 if (!!scheds[id]) {
                     _details.find('#title').text(scheds[id].title)
-                    _details.find('#consult').text(scheds[id].consultdate); // Set the consultation date
+                    _details.find('#consult').text(scheds[id].consultdate);
                     _details.find('#name').text(scheds[id].name)
                     _details.find('#specialty').text(scheds[id].specialty)
                     _details.find('#start').text(scheds[id].sdate)
@@ -509,5 +520,3 @@ if (!isset($_SESSION['iuid'])) {
     })
 </script>
 <?php include "include/footer.php"; ?>
-
-</html>

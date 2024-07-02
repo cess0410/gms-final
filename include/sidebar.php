@@ -111,7 +111,7 @@
                     <img src="vendors/treatment.png" alt="">
                 </div>
                 <div class="nav_title">
-                    <span>Manage Specialties</span>
+                    <span>Manage Specialization</span>
                 </div>
             </a>
         </li>
@@ -138,7 +138,7 @@
         <li>
             <a href="logs.php" aria-expanded=" false">
                 <div class="nav_icon_small">
-                    <img src="vendors/log.png" alt="">
+                    <img src="vendors/logo.png" alt="">
                 </div>
                 <div class="nav_title">
                     <span>Logs</span>

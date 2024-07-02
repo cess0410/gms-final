@@ -198,7 +198,6 @@ if (!isset($_SESSION['iuid'])) {
                                                 echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
                                             }
                                         }
-                                        echo "</select>";
                                         echo "</select></div>";
                                         echo '<div class="input-group mt-3">
                                         <div class="input-group-text">

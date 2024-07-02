@@ -16,10 +16,6 @@ if (!isset($_SESSION['iuid'])) {
 ?>
 
 <style type="text/css">
-    nav.sidebar {
-        padding-left: 5px !important;
-    }
-
     .btn_1 i {
         padding-right: 0px !important;
     }
@@ -90,7 +86,12 @@ if (!isset($_SESSION['iuid'])) {
                             <div class="page_title_left d-flex align-items-center">
                                 <h3 class="f_s_25 f_w_700 dark_text mr_30">List of Inquiries</h3>
                             </div>
-
+                            <div class="page_title_right">
+                                <div class="page_date_button d-flex align-items-center">
+                                    <img src="vendors/calender_icon.svg" alt="">
+                                    <?php echo date('d F Y'); ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,80 +106,74 @@ if (!isset($_SESSION['iuid'])) {
                                             <h3 class="m-0"></h3>
                                         </div>
                                     </div>
-
                                 </div>
-
                             </div>
+
                             <div class="white_card_body ">
+                                <div class="table-responsive">
+                                    <?php
+                                    $sql = "SELECT * FROM tblinquiry";
+                                    $result = mysqli_query($db, $sql);
+                                    $inquiry = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                                    ?>
 
-                                <?php
-                                $sql = "SELECT * FROM tblinquiry";
-                                $result = mysqli_query($db, $sql);
-                                $inquiry = mysqli_fetch_all($result, MYSQLI_ASSOC);
-                                ?>
+                                    <table id="inquiryTable" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Date</th>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Mode</th>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Name</th>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Contact Number</th>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Specialty</th>
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Scheduled Date</th>
+                                                <!-- <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; ">Status</th> -->
+                                                <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important;  ">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($inquiry as $row) : ?>
+                                                <tr id="row_<?= $row['id']; ?>">
+                                                    <td style="color: black; font-weight: 400;"><?= $row['consultdate'] ?></td>
+                                                    <td style="color: black; font-weight: 400"><?= $row['mode'] ?></td>
+                                                    <td style="color: black; font-weight: 400"><?= $row['name'] ?></td>
+                                                    <td style="color: black; font-weight: 400"><?= $row['contact_no'] ?></td>
 
-                                <table id="inquiryTable" class="table table-striped" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Date</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Mode</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Endorsement</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Name</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Contact Number</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Specialty</th>
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Scheduled Date</th>
-                                            <!-- <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important;">Status</th> -->
-                                            <th style="background: #00A651 !important; color: white !important; font-weight: 700; font-size: 15px!important; vertical-align: middle!important; ">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($inquiry as $row) : ?>
-                                            <tr id="row_<?= $row['id']; ?>">
-                                                <td style="color: black; font-weight: 400;"><?= $row['consultdate'] ?></td>
-                                                <td style="color: black; font-weight: 400"><?= $row['mode'] ?></td>
-                                                <td style="color: black; font-weight: 400"><?= $row['endorsement'] ?></td>
-                                                <td style="color: black; font-weight: 400"><?= $row['name'] ?></td>
-                                                <td style="color: black; font-weight: 400"><?= $row['contact_no'] ?></td>
-
-                                                <?php
-                                                $sql = "SELECT * FROM `specialties` WHERE id = '{$row['specialty']}'";
-                                                $result1 = $db->query($sql);
-
-                                                if ($result1 && $result1->num_rows > 0) {
-                                                    $specialty_row = $result1->fetch_assoc();
-                                                    $specialty_name = $specialty_row['specialty'];
-                                                    echo "<td style='color: black; font-weight: 400'>$specialty_name</td>";
-                                                }
-                                                ?>
-                                                <td style="color: black; font-weight: 400">
                                                     <?php
-                                                    if (!empty($row['start_datetime'])) {
-                                                        echo date('F d, Y h:i A', strtotime($row['start_datetime']));
-                                                    } else {
-                                                        echo "";
+                                                    $sql = "SELECT * FROM `specialties` WHERE id = '{$row['specialty']}'";
+                                                    $result1 = $db->query($sql);
+
+                                                    if ($result1 && $result1->num_rows > 0) {
+                                                        $specialty_row = $result1->fetch_assoc();
+                                                        $specialty_name = $specialty_row['specialty'];
+                                                        echo "<td style='color: black; font-weight: 400'>$specialty_name</td>";
                                                     }
                                                     ?>
-                                                </td>
+                                                    <td style="color: black; font-weight: 400">
+                                                        <?php
+                                                        if (!empty($row['start_datetime'])) {
+                                                            echo date('F d, Y h:i A', strtotime($row['start_datetime']));
+                                                        } else {
+                                                            echo "";
+                                                        }
+                                                        ?>
+                                                    </td>
 
-                                                </td>
+                                                    </td>
 
-                                                <td>
-                                                    <button class='btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToUpdate(<?= $row['id']; ?>)"><i class="fas fa-edit"></i></button>
-                                                    <button class='btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToSchedule(<?= $row['id']; ?>)"><i class="fas fa-eye"></i></button>
-                                                    <button class='btn_1 mb-1' style="padding: 9px 15px!important;" onclick="deleteRow(<?= $row['id']; ?>)"><i class="fas fa-trash"></i></button>
+                                                    <td>
+                                                        <button class='btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToUpdate(<?= $row['id']; ?>)"><i class="fas fa-edit"></i></button>
+                                                        <button class='btn_1 mb-1' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToSchedule(<?= $row['id']; ?>)"><i class="fas fa-eye"></i></button>
+                                                        <button class='btn_1 mb-1' style="padding: 9px 15px!important;" onclick="deleteRow(<?= $row['id']; ?>)"><i class="fas fa-trash"></i></button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
 
-
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-
+                                </div>
                             </div>
                         </div>
-                    </div>
     </section>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>

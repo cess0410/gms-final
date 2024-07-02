@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="vendors/material-icons.css"> -->
 
     <link rel="stylesheet" href="vendors/metisMenu.css">
-    <link rel="stylesheet" href="vendors/style.css">
+    <link rel="stylesheet" href="css/style3.css">
     <link rel="stylesheet" href="vendors/style1.css">
     <link rel="stylesheet" href="vendors/default.css" id="colorSkinCSS">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
