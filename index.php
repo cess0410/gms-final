@@ -52,11 +52,15 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 // include 'header.php'
 ?>
 
+
+<!DOCTYPE html>
+<html data-theme="light">
+
 <head>
     <link href="/gms-final/assets/css/daisy.css" rel="stylesheet" type="text/css" />
     <script src="/gms-final/assets/js/tailwind.js"></script>
     <script src="/gms-final/assets/js/sweetalert.js"></script>
-
+    <title>Login</title>
 </head>
 
 
