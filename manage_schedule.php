@@ -198,7 +198,6 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                                 <span>Start Time</span>
                                             </div>
                                             <input type="time" class="form-control form-control-sm rounded-0" name="am" id="am" pattern="(?:1[012]|0?[1-9]):[0-5][0-9] (?:AM|PM)">
-
                                         </div>
                                         <div class="input-group mt-3">
                                             <div class="input-group-text">
