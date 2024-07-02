@@ -21,7 +21,7 @@ if (!isset($_SESSION['iuid'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>GMS</title>
     <script src="/gms-final/assets/js/jquery-3.6.0.min.js"></script>
     <?php include 'template_scripts_fullcalendar.php' ?>
     <?php include 'template_scripts_datatables.php' ?>
