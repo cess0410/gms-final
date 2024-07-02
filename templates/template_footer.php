@@ -32,13 +32,13 @@
                 List of Inquiries
             </a>
         </li>
-        <li><a href="view_calendar.php">
+        <!-- <li><a href="view_calendar.php">
                 <div class="w-10 rounded-full">
                     <img src="vendors/calendar.png" alt="">
                 </div>
                 Calendar
             </a>
-        </li>
+        </li> -->
         <li><a href="list_receivers.php">
                 <div class="w-10 rounded-full">
                     <img src="vendors/report.png" alt="">

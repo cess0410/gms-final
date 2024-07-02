@@ -74,7 +74,7 @@
                     <span>List of Inquiries</span>
                 </div>
             </a>
-        </li>
+        <!-- </li>
         <li class="">
             <a href="view_calendar.php" aria-expanded="false">
                 <div class="nav_icon_small">
@@ -84,7 +84,7 @@
                     <span>Calendar</span>
                 </div>
             </a>
-        </li>
+        </li> -->
         <!-- <li class="">
             <a href="view_calendar.php" aria-expanded="false">
                 <div class="nav_icon_small">
