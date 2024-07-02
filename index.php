@@ -53,78 +53,56 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 ?>
 
 <head>
-    <link rel="stylesheet" href="vendors/all.min.css">
-    <link rel="stylesheet" href="vendors/bootstrap1.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons.css">
-    <link rel="stylesheet" href="vendors/nice-select.css">
-    <link rel="stylesheet" href="vendors/material-icons.css">
+    <link href="/gms-final/assets/css/daisy.css" rel="stylesheet" type="text/css" />
+    <script src="/gms-final/assets/js/tailwind.js"></script>
+    <script src="/gms-final/assets/js/sweetalert.js"></script>
 
 </head>
-<style>
-    .theme_bg_1 {
-        background: #00A651 !important;
-    }
-
-    .form-check-input:checked {
-        background-color: #00A651 !important;
-        border-color: #00A651 !important;
-    }
-</style>
-
-<body>
-    <div class="col-lg-12">
-        <div class="white_box mb_30 mt-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-4">
-                    <div class="modal-content cs_modal" style="border: none!important; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);">
-                        <div class="modal-header justify-content-center theme_bg_1" style="padding: 20px!important">
-                            <h5 class="modal-title text_white" style="color: white">GMS</h5>
-                        </div>
-                        <div class="modal-body">
-                            <div class="modal-body">
-                                <div class="mb-5" style="text-align: center;">
-                                    <img src="vendors/logo.png" alt="" style="width: 200px; filter: contrast(80%);">
-                                </div>
-
-                                <?php if (isset($_SESSION['ifname'])) : ?>
-                                    <p class="nav-link" style="margin-top: 20px!important; color: green !important;text-align: center!important;">
-                                        Welcome, <?= $_SESSION['ifname'] ?>
-                                    </p>
-                                <?php endif; ?>
 
 
-                                <div class="heading">
-                                    <?php if ($errmsg) echo '<p style="color: rgb(255,0,0);margin-top: 20px;font-size: 18px;font-weight: bold;">' . $errmsg . '</p>'; ?>
-                                </div>
-                                <form method="post">
-                                    <div class="mb-3"><label class="form-label" for="name">Username</label><input class="form-control item" type="text" id="name" autofocus="" name="username"></div>
-                                    <div class="mb-3"><label class="form-label" for="subject">Password</label><input class="form-control item" type="password" id="subject" name="password"></div>
-                                    <div class="cs_check_box mb-3">
-                                        <div class="form-check">
-                                            <input class="common_checkbox form-check-input" type="checkbox" id="formCheck-1" name="chkremember" value="1" checked>
-                                            <label class="form-check-label" for="formCheck-1">Remember Me</label>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3" style="margin-top: 50px!important; text-align: center;">
-                                        <button class="btn btn-primary btn-lg d-block w-100" style="background: #00A651 !important; border-color: #00A651 !important;font-size: 15px!important; text-color: white!important" type="submit">Login</button>
-                                    </div>
+<body class="bg-base-200">
+    <?php if ($errmsg) echo '<div role="alert" class="alert alert-error text-white my-3 px-3">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24">
+                <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>' . $errmsg . '.</span>
+            </div>'; ?>
+    <div class="hero  min-h-screen">
+        <div class="hero-content flex-col lg:flex-row-reverse">
 
-                                    <!-- <div class="text-center mb-3" style="padding-top: 15px;"><a href="forgotpassword">Forgot Password</a></div> -->
-                                </form>
-                            </div>
-                        </div>
+            <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+                <h1 class="text-5xl font-bold mx-36 my-5">GMS</h1>
+                <form method="POST" class="card-body">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Email</span>
+                        </label>
+                        <input type="text" id="name" autofocus="" name="username" class="input input-bordered" required />
                     </div>
-                </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Password</span>
+                        </label>
+                        <input type="text" id="subject" name="password" class="input input-bordered" required />
+                        <label class="label">
+                            <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
+                        </label>
+                    </div>
+                    <div class="form-control mt-6">
+                        <button class="btn btn-success">Login</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-
-
-
-
-    <script src="assets/js/vue.global.js"></script>
-
 </body>
 
 </html>
