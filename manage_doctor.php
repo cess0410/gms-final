@@ -24,7 +24,7 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <h1 class="text-3xl font-bold text-zinc-900 ">List of Doctors</h1>
         <div class="flex items-center space-x-2">
             <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
-            <span class="text-zinc-500 dark:text-zinc-400">02 July 2024</span>
+            <span class="text-zinc-500 dark:text-zinc-400"><?php echo date('d F Y'); ?></span>
         </div>
     </div>
     <hr />
