@@ -37,9 +37,9 @@ if (!isset($_SESSION['iuid'])) {
 
                                     <button type="submit" class="btn btn-success mt-3">Add Specialty</button>
                                 </form>
-                                <form id="updateForm" style="display: none;">
+                                <form id="updateForm" class="text-left" style="display: none;">
                                     <input type="hidden" id="specialtyId">
-                                    <label>Specialty:</label>
+                                    <label class="font-bold text-lg">Specialty:</label>
                                     <input type="text" id="updateSpecialty" class="input input-bordered w-full  mb-3">
                                     <button type="submit" class="btn btn-info">Update Specialty</button>
                                     <button type="button" id="cancelUpdate" class="btn btn-danger">Cancel</button>
