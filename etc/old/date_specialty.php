@@ -183,7 +183,9 @@ if (isset($_GET['id']) && isset($_GET['unixTimestamp'])) {
 
     <script>
         $(document).ready(function() {
-            $('#inquiryTable').DataTable();
+            $('#inquiryTable').DataTable( {
+    responsive: true
+} );;
         });
     </script>
 </body>

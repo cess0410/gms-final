@@ -261,8 +261,12 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#doctorTable').DataTable();
-        $('#specialtiesTable').DataTable();
+        $('#doctorTable').DataTable( {
+    responsive: true
+} );;
+        $('#specialtiesTable').DataTable( {
+    responsive: true
+} );;
         var scheds = <?php echo isset($sched_res) ? json_encode($sched_res) : json_encode([]); ?>;
         var specialtyCounts = <?php echo isset($specialty_counts) ?  json_encode($specialty_counts) : json_encode([]); ?>;
         var calendar;
