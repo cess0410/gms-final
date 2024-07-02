@@ -160,8 +160,10 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                         </div>
                                         <div class="col-lg-8">
                                             <div class="row justify-content-end">
-                                                <div class="col-lg-8 d-flex justify-content-end">
-                                                    <button class="btn_1" onclick="location.reload()">Refresh</button>
+                                                <div class="col-lg-8 d-flex justify-content-end mb-3">
+                                                    <button class="btn_1" onclick="location.reload()">
+                                                        <i class="fa fa-sync"></i> Refresh
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
