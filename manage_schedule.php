@@ -18,30 +18,28 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
-
 $queryDoctors = "SELECT d.id, d.name AS doctor_name, s.specialty AS specialty FROM doctors d LEFT JOIN specialties s ON d.specialty = s.id";
 $doctorsResult = $db->query($queryDoctors) or die($db->error);
-
 $doctorOptions = '';
 if ($doctorsResult->num_rows > 0) {
     $doctorOptions .= '<option value="" selected>Select a doctor</option>';
+
     while ($doctorRow = $doctorsResult->fetch_assoc()) {
         $doctorOptions .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["doctor_name"] . '</option>';
     }
 }
 
-$schedules = $db->query("SELECT d.id, d.name AS doctor, s.specialty, sl.sched_date, sl.am, sl.pm 
+$schedules = $db->query("SELECT d.id, d.name AS doctor, s.specialty, sl.start_datetime, sl.end_datetime 
                         FROM doctors d 
                         LEFT JOIN specialties s ON d.specialty = s.id 
                         LEFT JOIN schedule_list sl ON sl.doctor = d.id");
 $sched_res = [];
 foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
-    $row['sched_date'] = ($row['sched_date']);
+    $row['start_datetime'] = ($row['start_datetime']);
+    $row['end_datetime'] = ($row['end_datetime']);
     $sched_res[$row['id']] = $row;
     $row['doctor'] = ($row['doctor']);
     $row['specialty'] = ($row['specialty']);
-    $row['am'] = ($row['am']);
-    $row['pm'] = ($row['pm']);
 }
 ?>
 
@@ -161,16 +159,14 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                         <div class="col-lg-8">
                                             <div class="row justify-content-end">
                                                 <div class="col-lg-8 d-flex justify-content-end mb-3">
-                                                    <button class="btn_1" onclick="location.reload()">
-                                                        <i class="fa fa-sync"></i> Refresh
-                                                    </button>
+                                                    <button class="btn_1" onclick="location.reload()"><i class="fa fa-sync"></i> Refresh</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <form action="api/schedule_action.php" method="post" id="schedule-form">
-                                        <div class="input-group">
+                                        <div class="input-group mt-5">
                                             <div class="input-group-text">
                                                 <span>Doctor</span>
                                             </div>
@@ -187,23 +183,24 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                                 <input class="form-control" id="specialty" name="specialty" readonly>
                                             </div>
                                         </div>
-                                        <div class="input-group mt-3">
+                                        <!-- <div class="input-group mt-3">
                                             <div class="input-group-text">
                                                 <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
                                             </div>
-                                            <input type="date" class="form-control form-control-sm rounded-0" name="sched_date" id="sched_date">
-                                        </div>
+                                            <input type="date" class="form-control form-control-sm rounded-0" name="start_datetime" id="start_datetime">
+                                        </div> -->
                                         <div class="input-group mt-3">
                                             <div class="input-group-text">
                                                 <span>Start Time</span>
                                             </div>
-                                            <input type="time" class="form-control form-control-sm rounded-0" name="am" id="am" pattern="(?:1[012]|0?[1-9]):[0-5][0-9] (?:AM|PM)">
+                                            <input type="datetime-local" class="form-control form-control-sm rounded-0" name="start_datetime" id="start_datetime">
+
                                         </div>
                                         <div class="input-group mt-3">
                                             <div class="input-group-text">
                                                 <span>End Time</span>
                                             </div>
-                                            <input type="time" class="form-control form-control-sm rounded-0" name="pm" id="pm" pattern="(?:1[012]|0?[1-9]):[0-5][0-9] (?:AM|PM)">
+                                            <input type="datetime-local" class="form-control form-control-sm rounded-0" name="end_datetime" id="end_datetime">
 
                                         </div>
                                     </form>
@@ -211,20 +208,14 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                 <div class="card-footer">
                                     <div class="text-center">
                                         <button class="btn btn-primary btn-sm rounded-0" type="submit" form="schedule-form"><i class="fa fa-save"></i> Save</button>
-                                        <button class="btn btn-default border btn-sm rounded-0" type="reset" form="schedule-form"><i class="fa fa-reset"></i> Cancel</button>
+                                        <button class="btn btn-default border btn-sm rounded-0" type="reset" form="schedule-form" onclick="location.reload()"><i class="fa fa-reset"></i> Cancel</button>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
-
-
             </div>
-
-        </div>
         </div>
         <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="event-details-modal">
             <div class="modal-dialog modal-dialog-centered">
@@ -236,40 +227,33 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                     <div class="modal-body rounded-0">
                         <div class="container-fluid">
                             <dl>
+                                <dt class="text-muted">Doctor</dt>
+                                <dd id="doctor"></dd>
                                 <dt class="text-muted">Specialty</dt>
                                 <dd id="specialty"></dd>
-                                <dt class="text-muted">Date</dt>
-                                <dd id="sched_date" class=""></dd>
                                 <dt class="text-muted">Start Time</dt>
-                                <dd id="am" class=""></dd>
+                                <dd id="start_datetime" class=""></dd>
                                 <dt class="text-muted">End Time</dt>
-                                <dd id="pm" class=""></dd>
+                                <dd id="end_datetime" class=""></dd>
                             </dl>
                         </div>
                     </div>
                     <div class="modal-footer rounded-0">
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit" data-id="" style="border-radius: 5px!important;">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete" data-id="" style="border-radius: 5px!important;">Delete</button>
-                            <button type="button" class="btn btn-secondary btn-sm rounded-0" data-bs-dismiss="modal" style="border-radius: 5px!important;">Close</button>
+                            <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit" data-id="<?= $row['id']; ?>"><i class="fa fa-edit"></i> Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete" data-id="<?= $row['id']; ?>"><i class="fa fa-trash"></i> Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </section>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
     <script>
         $('#doctor').change(function() {
             var doctorId = $(this).val();
 
-
-            // Fetch doctor schedule via AJAX
             $.ajax({
                 url: 'api/get_doctor_schedule.php',
                 type: 'GET',
@@ -277,7 +261,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                     doctor_id: doctorId
                 },
                 success: function(response) {
-                    events = response;
+                    var events = response;
                     calendar.removeAllEvents();
                     calendar.addEventSource(events);
                     calendar.refetchEvents();
@@ -286,103 +270,29 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                     console.log('Error fetching doctor schedule: ' + error);
                 }
             });
-        });
 
-        // Initial calendar setup with empty events
-    </script>
-
-
-    <script>
-        var scheds = <?= json_encode($sched_res) ?>;
-        var calendar;
-        var Calendar = FullCalendar.Calendar;
-        var events = [];
-        var ids = [];
-
-
-        $(function() {
-            if (!!scheds) {
-                Object.keys(scheds).forEach(k => {
-                    var row = scheds[k];
-                    var key = row.sched_date + '_' + row.specialty;
-                    events.push({
-                        id: row.id,
-                        title: row.doctor,
-                        specialty: row.specialty,
-                        start: row.sched_date + 'T' + row.am,
-                        end: row.sched_date + 'T' + row.pm.replace('T', ' '),
-                    });
-                });
-
-                var date = new Date();
-                var d = date.getDate(),
-                    m = date.getMonth(),
-                    y = date.getFullYear();
-
-                calendar = new Calendar(document.getElementById('calendar'), {
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        right: 'dayGridMonth,dayGridWeek,list',
-                        center: 'title',
-                    },
-                    selectable: true,
-                    themeSystem: 'bootstrap',
-                    events: events,
-                    eventClick: function(info) {
-                        // Fetch specialty via AJAX
-                        // $.ajax({
-                        //     url: 'api/get_specialty.php',
-                        //     type: 'GET',
-                        //     data: {
-                        //         doctor_id: doctorId
-                        //     },
-                        //     success: function(response) {
-                        //         $('#specialty').val(response);
-                        //         $('#specialtyField').show();
-                        //         console.log('Specialty received: ' + response);
-                        //     },
-                        //     error: function(xhr, status, error) {
-                        //         console.log('Error fetching specialty: ' + error);
-                        //     }
-                        // });
-
-
-                    },
-                    eventDidMount: function(info) {},
-                });
-
-                calendar.render();
-
-            }
+            $.ajax({
+                url: 'api/get_specialty.php',
+                type: 'GET',
+                data: {
+                    doctor_id: doctorId
+                },
+                success: function(response) {
+                    $('#specialty').val(response);
+                    $('#specialtyField').show();
+                    console.log('Specialty received: ' + response);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching specialty: ' + error);
+                }
+            });
         });
     </script>
+
+
     <script>
         var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
     </script>
-    <script>
-        // $(document).ready(function() {
-        //     $('#doctor').change(function() {
-        //         var doctorId = $(this).val();
 
-        //         $.ajax({
-        //             url: 'api/get_specialty.php',
-        //             type: 'GET',
-        //             data: {
-        //                 doctor_id: doctorId
-        //             },
-        //             success: function(response) {
-        //                 $('#specialty').val(response);
-        //                 $('#specialtyField').show();
-        //                 console.log('Specialty received: ' + response);
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.log('Error: ' + error);
-        //             }
-        //         });
-        //     });
-        // });
-    </script>
     <script src="js/sched_script.js"></script>
-
-
     <?php include('include/footer.php'); ?>
