@@ -42,9 +42,9 @@ if (!isset($_SESSION['iuid'])) {
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count 
-    FROM tblinquiry AS i 
-    LEFT JOIN specialties AS s ON i.specialty = s.id 
+            $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count
+    FROM tblinquiry AS i
+    LEFT JOIN specialties AS s ON i.specialty = s.id
     GROUP BY DATE(i.start_datetime), i.specialty");
 
 
@@ -65,8 +65,8 @@ if (!isset($_SESSION['iuid'])) {
             ?>
 
             <script>
-                var scheds = <?= json_encode($sched_res) ?>;
-                var specialtyCounts = <?= json_encode($specialty_counts) ?>;
+                var scheds = <?php echo isset($sched_res) ? json_encode($sched_res) : json_encode([]); ?>;
+                var specialtyCounts = <?php echo isset($specialty_counts) ?  json_encode($specialty_counts) : json_encode([]);?>;
                 var calendar;
                 var Calendar = FullCalendar.Calendar;
                 var events = [];

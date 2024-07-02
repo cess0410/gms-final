@@ -114,13 +114,13 @@
                     <div class="card-body">
                         <?php
                         $total_count = 0;
-                        $sql = "SELECT DISTINCT name, COUNT(name) AS total_count 
+                        $sql = "SELECT DISTINCT name, COUNT(name) AS total_count
                     FROM (
                         SELECT DISTINCT name, id, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) AS reschedule_number
-                        FROM tblinquiry 
+                        FROM tblinquiry
                         WHERE status = 'Rescheduled'
-                    ) AS subquery 
-                    WHERE reschedule_number <= 3 
+                    ) AS subquery
+                    WHERE reschedule_number <= 3
                     GROUP BY name;";
                         $result = $db->query($sql);
 
@@ -149,9 +149,9 @@
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count 
-    FROM tblinquiry AS i 
-    LEFT JOIN specialties AS s ON i.specialty = s.id 
+            $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count
+    FROM tblinquiry AS i
+    LEFT JOIN specialties AS s ON i.specialty = s.id
     GROUP BY DATE(i.start_datetime), i.specialty");
 
             if ($schedules === false) {
@@ -165,55 +165,7 @@
                 $specialty_counts[$key] = $row['specialty_count'];
             }
             ?>
-            <script>
-                var scheds = <?= json_encode($sched_res) ?>;
-                var specialtyCounts = <?= json_encode($specialty_counts) ?>;
-                var calendar;
-                var Calendar = FullCalendar.Calendar;
-                var events = [];
-                var ids = [];
 
-
-                $(function() {
-                    if (!!scheds) {
-                        Object.keys(scheds).forEach(k => {
-                            var row = scheds[k];
-                            var key = row.sdate + '_' + row.specialty;
-                            var inquiry_count = specialtyCounts[key] || 0;
-                            // console.log(row)
-                            events.push({
-                                id: row.specialty_id,
-                                title: row.specialty + ' (' + inquiry_count + ')',
-                                allDay: true,
-                                start: row.start_datetime
-                            });
-                        });
-                    }
-                    var date = new Date()
-                    var d = date.getDate(),
-                        m = date.getMonth(),
-                        y = date.getFullYear()
-
-                    calendar = new Calendar(document.getElementById('calendar'), {
-                        headerToolbar: {
-                            left: 'prev,next today',
-                            right: 'dayGridMonth,dayGridWeek,list',
-                            center: 'title',
-                        },
-                        selectable: true,
-                        themeSystem: 'bootstrap',
-                        events: events,
-                        eventClick: function(info) {
-                            var startDate = new Date(info.event.start);
-                            startDate.setHours(0, 0, 0, 0);
-                            var unixTimestamp = Math.floor(startDate.getTime() / 1000);
-                            window.location.href = 'date_specialty.php?id=' + info.event.id + '&unixTimestamp=' + unixTimestamp;
-                        },
-                        eventDidMount: function(info) {},
-                    });
-                    calendar.render();
-                })
-            </script>
             <!-- End Calendar -->
         </div>
         <div class="col-span-1 md:col-span-6 lg:col-span-5">
@@ -311,6 +263,53 @@
     $(document).ready(function() {
         $('#doctorTable').DataTable();
         $('#specialtiesTable').DataTable();
+        var scheds = <?php echo isset($sched_res) ? json_encode($sched_res) : json_encode([]); ?>;
+        var specialtyCounts = <?php echo isset($specialty_counts) ?  json_encode($specialty_counts) : json_encode([]); ?>;
+        var calendar;
+        var Calendar = FullCalendar.Calendar;
+        var events = [];
+        var ids = [];
+
+
+        $(function() {
+            if (!!scheds) {
+                Object.keys(scheds).forEach(k => {
+                    var row = scheds[k];
+                    var key = row.sdate + '_' + row.specialty;
+                    var inquiry_count = specialtyCounts[key] || 0;
+                    // console.log(row)
+                    events.push({
+                        id: row.specialty_id,
+                        title: row.specialty + ' (' + inquiry_count + ')',
+                        allDay: true,
+                        start: row.start_datetime
+                    });
+                });
+            }
+            var date = new Date()
+            var d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear()
+
+            calendar = new Calendar(document.getElementById('calendar'), {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    right: 'dayGridMonth,dayGridWeek,list',
+                    center: 'title',
+                },
+                selectable: true,
+                themeSystem: 'bootstrap',
+                events: events,
+                eventClick: function(info) {
+                    var startDate = new Date(info.event.start);
+                    startDate.setHours(0, 0, 0, 0);
+                    var unixTimestamp = Math.floor(startDate.getTime() / 1000);
+                    window.location.href = 'date_specialty.php?id=' + info.event.id + '&unixTimestamp=' + unixTimestamp;
+                },
+                eventDidMount: function(info) {},
+            });
+            calendar.render();
+        })
     });
 </script>
 <?php include_once 'templates/template_footer.php'; ?>
