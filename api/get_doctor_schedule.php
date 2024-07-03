@@ -8,7 +8,7 @@ if (isset($_GET['doctor_id'])) {
                     FROM doctors d 
                     LEFT JOIN specialties s ON d.specialty = s.id
                     LEFT JOIN schedule_list sl ON sl.doctor = d.id
-                    WHERE d.id = ?";
+                    WHERE d.id = ? ";
 
     $stmt = $db->prepare($sql);
     $stmt->bind_param("i", $doctorId);

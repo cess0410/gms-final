@@ -5,7 +5,7 @@
         if (!!scheds) {
             Object.keys(scheds).map(k => {
                 var row = scheds[k]
-                events.push({ id: row.id, title: row.title, start: row.start_datetime, end: row.end_datetime });
+                events.push({ id: row.id, title: row.doctor, start: row.start_datetime, end: row.end_datetime });
             })
         }
         var date = new Date()
@@ -27,8 +27,8 @@
                 var _details = $('#event-details-modal')
                 var id = info.event.id
                 if (!!scheds[id]) {
-                    _details.find('#title').text(scheds[id].title)
-                    _details.find('#description').text(scheds[id].description)
+                    // _details.find('#title').text(scheds[id].title)
+                    _details.find('#title').text(scheds[id].doctor)
                     _details.find('#start').text(scheds[id].sdate)
                     _details.find('#end').text(scheds[id].edate)
                     _details.find('#edit,#delete').attr('data-id', id)
@@ -53,13 +53,13 @@
 
         // Edit Button
         $('#edit').click(function() {
-            var id = $(this).attr('data-id')
+            var id = $(this).attr('data-id')                    
             if (!!scheds[id]) {
                 var _form = $('#schedule-form')
                 console.log(String(scheds[id].start_datetime), String(scheds[id].start_datetime).replace(" ", "\\t"))
                 _form.find('[name="id"]').val(id)
-                _form.find('[name="title"]').val(scheds[id].title)
-                _form.find('[name="description"]').val(scheds[id].description)
+                // _form.find('[name="title"]').val(scheds[id].title)
+                _form.find('[name="doctor"]').val(scheds[id].doctor)
                 _form.find('[name="start_datetime"]').val(String(scheds[id].start_datetime).replace(" ", "T"))
                 _form.find('[name="end_datetime"]').val(String(scheds[id].end_datetime).replace(" ", "T"))
                 $('#event-details-modal').modal('hide')

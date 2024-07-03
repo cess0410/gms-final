@@ -228,7 +228,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         <div class="container-fluid">
                             <dl>
                                 <dt class="text-muted">Doctor</dt>
-                                <dd id="doctor"></dd>
+                                <dd id="doctor_name"></dd>
                                 <dt class="text-muted">Specialty</dt>
                                 <dd id="specialty"></dd>
                                 <dt class="text-muted">Start Time</dt>
