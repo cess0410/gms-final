@@ -2,16 +2,21 @@
 include('config.php');
 
 if (isset($_GET['doctor_id'])) {
-    $doctorId = $_GET['doctor_id'];
-
-    $sql = "SELECT d.id, d.name AS doctor_name, s.specialty, sl.start_datetime, sl.end_datetime 
+    $doctorId = (int)$_GET['doctor_id'];
+    if ($doctorId != 0)
+        $sql = "SELECT d.id, d.name AS doctor_name, s.specialty, sl.start_datetime, sl.end_datetime 
                     FROM doctors d 
                     LEFT JOIN specialties s ON d.specialty = s.id
                     LEFT JOIN schedule_list sl ON sl.doctor = d.id
                     WHERE d.id = ? ";
-
+    else
+        $sql = "SELECT d.id, d.name AS doctor_name, s.specialty, sl.start_datetime, sl.end_datetime 
+            FROM doctors d 
+            LEFT JOIN specialties s ON d.specialty = s.id
+            LEFT JOIN schedule_list sl ON sl.doctor = d.id";
     $stmt = $db->prepare($sql);
-    $stmt->bind_param("i", $doctorId);
+    if ($doctorId != 0)
+        $stmt->bind_param("i", $doctorId);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result === false) {
