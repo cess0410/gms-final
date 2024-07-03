@@ -210,15 +210,33 @@ if (!isset($_SESSION['iuid'])) {
 
 
                                         echo "<div class='input-group mt-3'>
-        <div class='input-group-text'>
-            <span class=''>Schedule</span>
-        </div>
-        <input type='datetime-local' class='form-control form-control-sm rounded-0' style='font-size: 16px' name='start_datetime' id='start_datetime' value='" . $start_datetime . "'>
-    </div>";
+                                              <div class='input-group-text'>
+                                                  <span class=''>Schedule</span>
+                                              </div>";
+                                        if (!empty($start_datetime)) {
+                                            echo "<input type='datetime-local' class='form-control form-control-sm rounded-0' style='font-size: 16px' name='start_datetime' id='start_datetime' value='" . htmlspecialchars($start_datetime) . "' disabled>";
+                                        } else {
+                                            echo "<input type='datetime-local' class='form-control form-control-sm rounded-0' style='font-size: 16px' name='start_datetime' id='start_datetime'>";
+                                        }
+                                        echo "</div>";
+
+                                        // JavaScript to handle displaying/hiding the div based on $start_datetime
+                                        echo "<script>
+                                              var start_datetime = '<?php echo !empty($start_datetime) ? htmlspecialchars($start_datetime) : ''; ?>';
+                                              var startDatetimeInput = document.getElementById('start_datetime');
+                                              if (start_datetime) {
+                                                  startDatetimeInput.value = start_datetime;
+                                                  startDatetimeInput.disabled = true;
+                                              } else {
+                                                  startDatetimeInput.disabled = false;
+                                              }
+                                            </script>";
+
+
 
                                         echo ' 
                                 <div class="text-center mt-4">
-                     <button type="submit" class="btn_1" name="action" value="update"><i class="fas fa-save"></i>          SAVE</button>
+                     <button type="submit" class="btn_1" name="action" value="add"><i class="fas fa-save"></i>          SAVE</button>
                     <a class="btn_1" href="list_inquiries.php"><i class="fa fa-window-close"></i>          CANCEL</a>
                 </div>
                             </form> ';
@@ -296,7 +314,7 @@ if (!isset($_SESSION['iuid'])) {
         var formData = $(this).serialize();
         var additionalData = {
             'id': '<?= $id ?>',
-            'action': 'update'
+            'action': 'add'
         };
         formData += '&' + $.param(additionalData);
 

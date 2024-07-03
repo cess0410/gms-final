@@ -5,7 +5,7 @@
         <div class="col-span-1 md:col-span-6 lg:col-span-12">
             <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-4">
                 <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-green-500 text-white font-extrabold">
+                    <figure class="bg-green-500 text-white font-bold">
                         <h2 class="card-title my-5 m-auto">Total Inquiries</h2>
                     </figure>
                     <div class="card-body">
@@ -26,7 +26,7 @@
 
                 </div>
                 <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-pink-500 text-white font-extrabold">
+                    <figure class="bg-pink-500 text-white font-bold">
                         <h2 class="card-title my-5 m-auto">Total Consult</h2>
                     </figure>
                     <div class="card-body">
@@ -45,48 +45,29 @@
                     </div>
 
                 </div>
-                <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-red-500 text-white font-extrabold">
+                <!-- <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
+                    <figure class="bg-red-500 text-white font-bold">
                         <h2 class="card-title my-5 m-auto">Total Doctors</h2>
                     </figure>
                     <div class="card-body">
-                        <?php
-                        $total_count2 = 0;
-                        $sql2 = "SELECT COUNT(*) as total_count FROM doctors";
-                        $result2 = $db->query($sql2);
-                        if ($result2 && $result2->num_rows > 0) {
-                            $row2 = $result2->fetch_assoc();
-                            $total_count2 = $row2['total_count'];
-                            echo ' <h4 class="text-6xl text-center font-bold">' . $total_count2 . '</h4>';
-                        }
+                
+                        // $total_count2 = 0;
+                        // $sql2 = "SELECT COUNT(*) as total_count FROM doctors";
+                        // $result2 = $db->query($sql2);
+                        // if ($result2 && $result2->num_rows > 0) {
+                        //     $row2 = $result2->fetch_assoc();
+                        //     $total_count2 = $row2['total_count'];
+                        //     echo ' <h4 class="text-6xl text-center font-bold">' . $total_count2 . '</h4>';
+                        //}
 
                         ?>
                         <button type="button" class="btn mt-1 mb-1 w-100" onclick="window.location.href='list_inquiries.php'">VIEW</button>
                     </div>
 
-                </div>
-                <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-blue-500 text-white font-extrabold">
-                        <h2 class="card-title my-5 m-auto">Total Specialties</h2>
-                    </figure>
-                    <div class="card-body">
-                        <?php
-                        $total_count3 = 0;
-                        $sql3 = "SELECT COUNT(*) as total_count FROM specialties";
-                        $result3 = $db->query($sql3);
+                </div> -->
 
-                        if ($result3 && $result3->num_rows > 0) {
-                            $row3 = $result3->fetch_assoc();
-                            $total_count3 = $row3['total_count'];
-                            echo ' <h4 class="text-6xl text-center font-bold">' . $total_count3 . '</h4>';
-                        }
-                        ?>
-                        <button type="button" class="btn mt-1 mb-1 w-100" onclick="window.location.href='list_inquiries.php'">VIEW</button>
-                    </div>
-
-                </div>
                 <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-orange-500 text-white font-extrabold">
+                    <figure class="bg-orange-500 text-white font-bold">
                         <h2 class="card-title my-5 m-auto">Total Rescheduled</h2>
                     </figure>
                     <div class="card-body">
@@ -107,9 +88,9 @@
                     </div>
 
                 </div>
-                <div class="col-span-1 md:col-span-2 card bg-base-100  shadow-xl">
-                    <figure class="bg-orange-100">
-                        <h2 class="card-title my-5 m-auto">Total Inquiries</h2>
+                <div class="col-span-1 md:col-span-3 card bg-base-100 shadow-xl">
+                    <figure class="bg-red-500 text-white font-bold">
+                        <h2 class="card-title my-5 m-auto text-center">Total Maximum Inquiries</h2>
                     </figure>
                     <div class="card-body">
                         <?php
@@ -185,20 +166,20 @@
                             <table id="doctorTable" class="w-full ">
                                 <thead>
                                     <tr>
-                                        <th style="display: none;">Name</th>
-                                        <!-- <th style="display: none;">Specialty</th> -->
-                                        <th style="display: none;">Action</th>
+                                        <th>Name</th>
+                                        <th>Specialty</th>
+                                        <!-- <th>Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($doctors as $row) : ?>
                                         <tr class="m-100">
-
                                             <td><?= $row['name']; ?></td>
-                                            <td class="text-right"><a href="#" class="btn bg-blue mb-2"> <img class="fa w-6 h-6" src="assets/svg/eye.svg" alt=""> </a>
+                                            <td><?= $row['specialty']; ?></td>
+                                            <!-- <td class="text-right"><a href="#" class="btn bg-blue mb-2"> <img class="fa w-6 h-6" src="assets/svg/eye.svg" alt=""> </a>
                                                 <a href="#" class="btn bg-green mb-2"> <img class="fa w-6 h-6" src="assets/svg/pencil.svg" alt=""> </a>
                                                 <a href="#" class="btn bg-red mb-2"> <img class="fa w-6 h-6" src="assets/svg/trash.svg" alt=""> </a>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -208,49 +189,7 @@
                 </div>
                 <!-- Doctors End -->
                 <!-- Specialties -->
-                <div class="col-span-1 md:col-span-6 lg:col-span-3">
-                    <?php
-                    $sql = "SELECT * FROM specialties";
-                    $result = mysqli_query($db, $sql);
-                    $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
-                    ?>
-                    <div class="card bg-base-100 w-full shadow-xl">
-                        <figure class="bg-blue-500 text-white">
-                            <h2 class="card-title my-5 m-auto">Specialties</h2>
-                        </figure>
-                        <div class="card-body">
-                            <table id="specialtiesTable" class="w-full ">
-                                <thead>
-                                    <tr>
-                                        <th style="display: none;">Specialty</th>
-                                        <th style="display: none;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($doctors as $row) : ?>
-                                        <tr>
-                                            <td>
 
-                                                <span class="f_s_14 f_w_400 text_color_11"> <?= $row['specialty']; ?></span>
-
-
-                                            </td>
-                                            <td class="text-right ">
-
-                                                <a href="#" class="btn bg-green mb-2"> <img class="fa w-6 h-6" src="assets/svg/eye.svg" alt=""></i> </a>
-                                                <a href="#" class="btn bg-green mb-2"> <img class="fa w-6 h-6" src="assets/svg/pencil.svg" alt=""></i> </a>
-                                                <a href="#" class="btn bg-green mb-2"> <img class="fa w-6 h-6" src="assets/svg/trash.svg" alt=""> </a>
-
-                                            </td>
-                                        </tr>
-                                        </hr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Specialties End -->
 
             </div>
 
@@ -261,12 +200,12 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#doctorTable').DataTable( {
-    responsive: true
-} );;
-        $('#specialtiesTable').DataTable( {
-    responsive: true
-} );;
+        $('#doctorTable').DataTable({
+            responsive: true
+        });;
+        $('#specialtiesTable').DataTable({
+            responsive: true
+        });;
         var scheds = <?php echo isset($sched_res) ? json_encode($sched_res) : json_encode([]); ?>;
         var specialtyCounts = <?php echo isset($specialty_counts) ?  json_encode($specialty_counts) : json_encode([]); ?>;
         var calendar;

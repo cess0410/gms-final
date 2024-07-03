@@ -27,10 +27,17 @@ if (!isset($_SESSION['iuid'])) {
     <?php include 'template_scripts_datatables.php' ?>
     <link rel="stylesheet" href="vendors/themify-icons.css">
     <link href="/gms-final/assets/css/daisy.css" rel="stylesheet" type="text/css" />
+    <link href="/gms-final/assets/css/all.min.css" rel="stylesheet" type="text/css" />
     <script src="/gms-final/assets/js/tailwind.js"></script>
     <script src="/gms-final/assets/js/sweetalert.js"></script>
-</head>
 
+</head>
+<style>
+    body {
+
+        font-family: 'mulish', sans-serif !important;
+    }
+</style>
 
 <body>
     <div class="drawer lg:drawer-open">
@@ -48,11 +55,9 @@ if (!isset($_SESSION['iuid'])) {
                 <div class="mx-2 flex-1 px-2"></div>
                 <div class="hidden flex-none lg:block">
                     <ul class="menu menu-horizontal">
-                        <!-- Navbar menu content here -->
-                        <!-- <li><a>Navbar Item 1</a></li> -->
-                        <li><a href="logout.php">Logout</a></li>
+                        <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
                     </ul>
                 </div>
             </div>
-            <!-- Page content here -->
             <div>
