@@ -175,11 +175,41 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            var scheds = <?= json_encode($sched_res) ?>;
-            var calendar;
-            var Calendar = FullCalendar.Calendar;
-            var events = [];
+            // var doctorId = $(this).val();
+            var doctorId = $('#doctor').val();
 
+            // $.ajax({
+            //     url: 'api/get_doctor_schedule.php',
+            //     type: 'GET',
+            //     data: {
+            //         doctor_id: doctorId
+            //     },
+            //     success: function(response) {
+            //         var events = response;
+            //         calendar.removeAllEvents();
+            //         calendar.addEventSource(events);
+            //         calendar.refetchEvents();
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.log('Error fetching doctor schedule: ' + error);
+            //     }
+            // });
+
+            // $.ajax({
+            //     url: 'api/get_specialty.php',
+            //     type: 'GET',
+            //     data: {
+            //         doctor_id: doctorId
+            //     },
+            //     success: function(response) {
+            //         $('#specialty').val(response);
+            //         $('#specialtyField').show();
+            //         console.log('Specialty received: ' + response);
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.log('Error fetching specialty: ' + error);
+            //     }
+            // });
             function fetchDoctorSchedule(doctorId) {
                 $.ajax({
                     url: 'api/get_doctor_schedule.php',
@@ -188,7 +218,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         doctor_id: doctorId
                     },
                     success: function(response) {
-                        events = response;
+                        var events = response;
                         calendar.removeAllEvents();
                         calendar.addEventSource(events);
                         calendar.refetchEvents();
@@ -207,7 +237,6 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         doctor_id: doctorId
                     },
                     success: function(response) {
-                        $('#specialty').text(response);
                         $('#specialty').val(response);
                         $('#specialtyField').show();
                         console.log('Specialty received: ' + response);
@@ -218,105 +247,184 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                 });
             }
 
-            function populateModal(eventId) {
-                if (scheds[eventId]) {
-                    var eventDetails = scheds[eventId];
+            fetchDoctorSchedule(doctorId);
+            fetchSpecialty(doctorId);
 
-                    $('#doctor_name').text(eventDetails.name);
-                    $('#specialty').text(eventDetails.specialty);
-                    $('#start').text(eventDetails.start_datetime);
-                    $('#end').text(eventDetails.end_datetime);
-
-                    $('#edit').attr('data-id', eventId); // Set data-id for edit button
-                    $('#delete').attr('data-id', eventId); // Set data-id for delete button
-
-                    $('#event-details-modal').modal('show');
-                } else {
-                    alert("Event details not found.");
-                }
-            }
-
-            // Initialize FullCalendar
-            calendar = new Calendar(document.getElementById('calendar'), {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,list'
-                },
-                themeSystem: 'bootstrap',
-                events: events, // Initialize with empty events
-                eventClick: function(info) {
-                    var eventId = info.event.id;
-                    populateModal(eventId); // Populate modal on event click
-                }
-            });
-
-            calendar.render(); // Render the calendar
-
-            // Initial fetch based on selected doctor
-            var initialDoctorId = $('#doctor').val();
-            fetchDoctorSchedule(initialDoctorId);
-            fetchSpecialty(initialDoctorId);
-
-            // Handle change in doctor selection
             $('#doctor').change(function() {
                 var selectedDoctorId = $(this).val();
+
                 fetchDoctorSchedule(selectedDoctorId);
                 fetchSpecialty(selectedDoctorId);
             });
 
-            $('#edit').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _form = $('#schedule-form');
-                    var event = scheds[eventId];
-                    var selectedDoctorId = event.name;
-                    $('#doctor').val(selectedDoctorId);
-                    console.log(selectedDoctorId);
-
-                    _form.find('[name="id"]').val(eventId);
-                    _form.find('[name="doctor"]').val(event.name);
-                    _form.find('[name="specialty"]').val(event.specialty);
-                    _form.find('[name="start_datetime"]').val(event.start_datetime);
-                    _form.find('[name="end_datetime"]').val(event.end_datetime);
-
-
-                    // Show specialty field if it was hidden
-                    $('#specialtyField').show();
-
-                    // Hide modal and focus on title input
-                    $('#event-details-modal').modal('hide');
-                    _form.find('[name="title"]').focus();
-                } else {
-                    alert("Event details not found.");
+            // $('#doctor').change(function() {
+            //     var doctorId = $(this).val();
+            //     $.ajax({
+            //         url: 'api/get_doctor_schedule.php',
+            //         type: 'GET',
+            //         data: {
+            //             doctor_id: doctorId
+            //         },
+            //         success: function(response) {
+            //             var events = response;
+            //             calendar.removeAllEvents();
+            //             calendar.addEventSource(events);
+            //             calendar.refetchEvents();
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.log('Error fetching doctor schedule: ' + error);
+            //         }
+            //     });
+            //     $.ajax({
+            //         url: 'api/get_specialty.php',
+            //         type: 'GET',
+            //         data: {
+            //             doctor_id: doctorId
+            //         },
+            //         success: function(response) {
+            //             $('#specialty').val(response);
+            //             $('#specialtyField').show();
+            //             console.log('Specialty received: ' + response);
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.log('Error fetching specialty: ' + error);
+            //         }
+            //     });
+            // });
+            var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
+            var calendar;
+            var Calendar = FullCalendar.Calendar;
+            var events = [];
+            $(function() {
+                if (!!scheds) {
+                    $.each(scheds, function(index, row) {
+                        console.log(index);
+                        events.push({
+                            id: index,
+                            title: row.name,
+                            specialty: row.specialty,
+                            start: row.start_datetime,
+                            end: row.end_datetime
+                        });
+                    });
                 }
-            });
+                var date = new Date()
+                var d = date.getDate(),
+                    m = date.getMonth(),
+                    y = date.getFullYear()
+
+                calendar = new Calendar(document.getElementById('calendar'), {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        right: 'dayGridMonth,dayGridWeek,list',
+                        center: 'title',
+                    },
+                    selectable: true,
+                    themeSystem: 'bootstrap',
+                    events: events,
+                    eventClick: function(info) {
+                        var selectedDoctorId = event.id;
+                        var eventId = info.event.id;
+
+                        if (scheds[eventId]) {
+                            var eventDetails = scheds[eventId];
+                            if (eventDetails) {
+                                //     $('#doctor').val(selectedDoctorId);
+                                //     $('#doctor').trigger('change');
+                                //     $('#start_datetime').text(eventDetails.start_datetime);
+                                //     $('#end_datetime').text(eventDetails.end_datetime);
+
+                                //     $('#edit').attr('data-id', eventId);
+                                //     $('#delete').attr('data-id', eventId);
+
+                                //     $('#event-details-modal').modal('show');
+                                // } else {
+                                //     alert("Event details not found.");
+                                $('#doctor_name').text(eventDetails.doctor);
+                                $('#specialty').text(eventDetails.specialty);
+                                $('#start').text(eventDetails.start_datetime);
+                                $('#end').text(eventDetails.end_datetime);
+                                $('#edit').attr('data-id', id);
+                                $('#delete').attr('data-id', id);
+
+                                $('#event-details-modal').modal('show');
+                            } else {
+                                alert("Event details not found.");
+                            }
+                        }
+
+
+                        calendar.render();
+
+                        $('#schedule-form').on('reset', function() {
+                            $(this).find('input:hidden').val('')
+                            $(this).find('input:visible').first().focus()
+                        });
+
+
+                        $('#edit').click(function() {
+                            var id = $(this).attr('data-id');
+                            if (id && scheds[id]) {
+                                var event = scheds[id];
+                                var selectedDoctorId = event.id;
+
+                                $('#doctor').val(selectedDoctorId);
+
+                                $('#doctor').trigger('change');
+
+                                $('#event-details-modal').modal('hide');
+                            } else {
+                                alert("Event details not found.");
+                            }
+                        });
+
+                        $('#delete').click(function() {
+                            var id = $(this).attr('data-id');
+                            if (id && scheds[id]) {
+                                var _conf = confirm("Are you sure to delete this scheduled event?");
+                                if (_conf === true) {
+                                    location.href = "./delete_schedule.php?id=" + id;
+                                }
+                            } else {
+                                alert("Event details not found.");
+                            }
+                        });
 
 
 
-            // Handle delete button click inside the modal
-            $('#delete').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _conf = confirm("Are you sure to delete this scheduled event?");
-                    if (_conf === true) {
-                        // Implement deletion logic here
-                        // Example: location.href = "./delete_schedule.php?id=" + eventId;
+                        // $('#edit').click(function() {
+                        //     var id = $(this).attr('data-id');
+                        //     if (id && scheds[id]) {
+                        //         var event = scheds[id];
+                        //         var selectedDoctorId = event.id;
+
+                        //         $('#doctor').val(selectedDoctorId);
+                        //         $('#doctor').trigger('change');
+                        //         $('#specialty').val('event.specialty');
+                        //         $('#start_datetime').val(event.start_datetime);
+                        //         $('#end_datetime').val(event.end_datetime);
+                        //         $('#doctor').trigger('change');
+                        //         $('#event-details-modal').modal('hide');
+                        //     } else {
+                        //         alert("Event details not found.");
+                        //     }
+                        // });
+
+
+                        // $('#delete').click(function() {
+                        //     var id = $(this).attr('data-id')
+                        //     if (!!scheds[id]) {
+                        //         var _conf = confirm("Are you sure to delete this scheduled event?");
+                        //         if (_conf === true) {
+                        //             location.href = "./delete_schedule.php?id=" + id;
+                        //         }
+                        //     } else {
+                        //         alert("Event is undefined");
+                        //     }
+                        // })
                     }
-                } else {
-                    alert("Event details not found.");
-                }
+                })
             });
-
-            // Reset form handling if needed
-            $('#schedule-form').on('reset', function() {
-                $(this).find('input:hidden').val('');
-                $(this).find('input:visible').first().focus();
-            });
-
         });
     </script>
-
-
-
     <?php include('include/footer.php'); ?>

@@ -4,16 +4,17 @@ include('config.php');
 if (isset($_GET['doctor_id'])) {
     $doctorId = (int)$_GET['doctor_id'];
     if ($doctorId != 0)
-        $sql = "SELECT d.id, d.name AS doctor_name, s.specialty, sl.start_datetime, sl.end_datetime 
+        $sql = "SELECT sl.id AS id, d.name AS name, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
                     FROM doctors d 
                     LEFT JOIN specialties s ON d.specialty = s.id
                     LEFT JOIN schedule_list sl ON sl.doctor = d.id
                     WHERE d.id = ? ";
     else
-        $sql = "SELECT d.id, d.name AS doctor_name, s.specialty, sl.start_datetime, sl.end_datetime 
+        $sql = "SELECT sl.id AS id, d.name AS name, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
             FROM doctors d 
             LEFT JOIN specialties s ON d.specialty = s.id
             LEFT JOIN schedule_list sl ON sl.doctor = d.id";
+
     $stmt = $db->prepare($sql);
     if ($doctorId != 0)
         $stmt->bind_param("i", $doctorId);
@@ -28,7 +29,7 @@ $events = array();
 while ($row = $result->fetch_assoc()) {
     $events[] = array(
         'id' => $row['id'],
-        'title' => $row['doctor_name'],
+        'title' => $row['name'],
         'start' => $row['start_datetime'],
         'end' => $row['end_datetime'],
     );

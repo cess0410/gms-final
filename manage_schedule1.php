@@ -32,18 +32,22 @@ if ($doctorsResult->num_rows > 0) {
     }
 }
 
-$schedules = $db->query("SELECT sl.id AS id, d.name AS name, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
+$schedules = $db->query("SELECT d.id, d.name AS doctor, s.specialty, sl.start_datetime, sl.end_datetime 
                         FROM doctors d 
                         LEFT JOIN specialties s ON d.specialty = s.id 
-                        LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE start_datetime IS NOT NULL AND end_datetime IS NOT NULL");
+                        LEFT JOIN schedule_list sl ON sl.doctor = d.id");
 $sched_res = [];
 foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
+    $sched_res[$row['id']] = $row;
+    $row['doctor'] = ($row['doctor']);
+    $row['specialty'] = ($row['specialty']);
     $row['start_datetime'] = ($row['start_datetime']);
     $row['end_datetime'] = ($row['end_datetime']);
-    $sched_res[$row['id']] = $row;
-    $row['doctor'] = ($row['name']);
-    $row['specialty'] = ($row['specialty']);
 }
+
+
+
+
 ?>
 <link rel="stylesheet" href="css/schedule.css">
 
@@ -89,14 +93,14 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                         </div>
                                         <div class="col-lg-8">
                                             <div class="row justify-content-end">
-                                                <div class="col-lg-8 d-flex justify-content-end mb-3">
+                                                <div class="col-lg-8 d-flex justify-content-end mb-4">
                                                     <button class="btn_1" onclick="location.reload()"><i class="fa fa-sync"></i> Refresh</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <form action="api/schedule_action.php" method="post" id="schedule-form">
-                                        <div class="input-group mt-5">
+                                        <div class="input-group">
                                             <div class="input-group-text">
                                                 <span>Doctor</span>
                                             </div>
@@ -159,14 +163,12 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                             </dl>
                         </div>
                     </div>
-
                     <div class="modal-footer rounded-0">
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit"><i class="fa fa-edit"></i> Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete"><i class="fa fa-trash"></i> Delete</button>
+                            <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit" data-id=""><i class="fa fa-edit"></i> Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete" data-id=""><i class="fa fa-trash"></i> Delete</button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -175,10 +177,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            var scheds = <?= json_encode($sched_res) ?>;
-            var calendar;
-            var Calendar = FullCalendar.Calendar;
-            var events = [];
+            var doctorId = $('#doctor').val();
 
             function fetchDoctorSchedule(doctorId) {
                 $.ajax({
@@ -188,7 +187,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         doctor_id: doctorId
                     },
                     success: function(response) {
-                        events = response;
+                        var events = response;
                         calendar.removeAllEvents();
                         calendar.addEventSource(events);
                         calendar.refetchEvents();
@@ -207,7 +206,6 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         doctor_id: doctorId
                     },
                     success: function(response) {
-                        $('#specialty').text(response);
                         $('#specialty').val(response);
                         $('#specialtyField').show();
                         console.log('Specialty received: ' + response);
@@ -218,105 +216,103 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                 });
             }
 
-            function populateModal(eventId) {
-                if (scheds[eventId]) {
-                    var eventDetails = scheds[eventId];
+            fetchDoctorSchedule(doctorId);
+            fetchSpecialty(doctorId);
 
-                    $('#doctor_name').text(eventDetails.name);
-                    $('#specialty').text(eventDetails.specialty);
-                    $('#start').text(eventDetails.start_datetime);
-                    $('#end').text(eventDetails.end_datetime);
-
-                    $('#edit').attr('data-id', eventId); // Set data-id for edit button
-                    $('#delete').attr('data-id', eventId); // Set data-id for delete button
-
-                    $('#event-details-modal').modal('show');
-                } else {
-                    alert("Event details not found.");
-                }
-            }
-
-            // Initialize FullCalendar
-            calendar = new Calendar(document.getElementById('calendar'), {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,list'
-                },
-                themeSystem: 'bootstrap',
-                events: events, // Initialize with empty events
-                eventClick: function(info) {
-                    var eventId = info.event.id;
-                    populateModal(eventId); // Populate modal on event click
-                }
-            });
-
-            calendar.render(); // Render the calendar
-
-            // Initial fetch based on selected doctor
-            var initialDoctorId = $('#doctor').val();
-            fetchDoctorSchedule(initialDoctorId);
-            fetchSpecialty(initialDoctorId);
-
-            // Handle change in doctor selection
             $('#doctor').change(function() {
                 var selectedDoctorId = $(this).val();
+
                 fetchDoctorSchedule(selectedDoctorId);
                 fetchSpecialty(selectedDoctorId);
             });
 
-            $('#edit').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _form = $('#schedule-form');
-                    var event = scheds[eventId];
-                    var selectedDoctorId = event.name;
-                    $('#doctor').val(selectedDoctorId);
-                    console.log(selectedDoctorId);
+            var scheds = <?= json_encode($sched_res) ?>;
 
-                    _form.find('[name="id"]').val(eventId);
-                    _form.find('[name="doctor"]').val(event.name);
-                    _form.find('[name="specialty"]').val(event.specialty);
-                    _form.find('[name="start_datetime"]').val(event.start_datetime);
-                    _form.find('[name="end_datetime"]').val(event.end_datetime);
-
-
-                    // Show specialty field if it was hidden
-                    $('#specialtyField').show();
-
-                    // Hide modal and focus on title input
-                    $('#event-details-modal').modal('hide');
-                    _form.find('[name="title"]').focus();
-                } else {
-                    alert("Event details not found.");
+            var calendar;
+            var Calendar = FullCalendar.Calendar;
+            var events = [];
+            $(function() {
+                if (!!scheds) {
+                    Object.keys(scheds).map(k => {
+                        var row = scheds[k];
+                        events.push({
+                            id: row.id,
+                            title: row.doctor,
+                            specialty: row.specialty,
+                            start: row.start_datetime,
+                            end: row.end_datetime,
+                        });
+                    });
                 }
-            });
 
+                calendar = new Calendar(document.getElementById('calendar'), {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        right: 'dayGridMonth,dayGridWeek,list',
+                        center: 'title',
+                    },
+                    selectable: true,
+                    themeSystem: 'bootstrap',
+                    events: events,
+                    eventClick: function(info) {
+                        var id = info.event.id;
+                        var eventDetails = scheds[id];
 
+                        if (eventDetails) {
+                            $('#doctor_name').text(eventDetails.doctor);
+                            $('#specialty').text(eventDetails.specialty);
+                            $('#start').text(eventDetails.start_datetime);
+                            $('#end').text(eventDetails.end_datetime);
+                            $('#edit').attr('data-id', id);
+                            $('#delete').attr('data-id', id);
 
-            // Handle delete button click inside the modal
-            $('#delete').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _conf = confirm("Are you sure to delete this scheduled event?");
-                    if (_conf === true) {
-                        // Implement deletion logic here
-                        // Example: location.href = "./delete_schedule.php?id=" + eventId;
+                            $('#event-details-modal').modal('show');
+                        } else {
+                            alert("Event details not found.");
+                        }
+                    },
+                    // eventDidMount: function(info) {},
+                    // editable: true
+
+                });
+
+                calendar.render();
+
+                $('#schedule-form').on('reset', function() {
+                    $(this).find('input:hidden').val('');
+                    $(this).find('input:visible').first().focus();
+                });
+
+                $('#edit').click(function() {
+                    var id = $(this).attr('data-id');
+                    if (id && scheds[id]) {
+                        var event = scheds[id];
+                        var selectedDoctorId = event.id;
+
+                        $('#doctor').val(selectedDoctorId);
+
+                        $('#doctor').trigger('change');
+
+                        $('#event-details-modal').modal('hide');
+                    } else {
+                        alert("Event details not found.");
                     }
-                } else {
-                    alert("Event details not found.");
-                }
-            });
+                });
 
-            // Reset form handling if needed
-            $('#schedule-form').on('reset', function() {
-                $(this).find('input:hidden').val('');
-                $(this).find('input:visible').first().focus();
+                $('#delete').click(function() {
+                    var id = $(this).attr('data-id');
+                    if (id && scheds[id]) {
+                        var _conf = confirm("Are you sure to delete this scheduled event?");
+                        if (_conf === true) {
+                            location.href = "./delete_schedule.php?id=" + id;
+                        }
+                    } else {
+                        alert("Event details not found.");
+                    }
+                });
             });
-
         });
     </script>
 
-
-
     <?php include('include/footer.php'); ?>
+    </select>
