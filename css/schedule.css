@@ -1,0 +1,67 @@
+
+    .container {
+        margin: 20px;
+    }
+
+    input[type="text"] {
+        padding: 10px;
+        width: 200px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .table>:not(:last-child)>:last-child>* {
+        border-bottom: none !important;
+    }
+
+    ul {
+        padding: 0px !important;
+    }
+
+    .btn_1 i {
+        padding-right: 0px !important;
+
+    }
+
+    .btn_1 {
+        padding: 9px 15px !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #bbc1c9 !important;
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem !important;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        word-wrap: normal;
+        text-transform: none;
+        margin: 0;
+
+    }
+
+    .center-buttons {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    section.main_content.dashboard_part.large_header_bg {
+        background: #F6F7FB !important;
+    }
+
+

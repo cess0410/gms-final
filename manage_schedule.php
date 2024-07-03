@@ -4,9 +4,12 @@ ob_start();
 include "include/config.php";
 include "include/header.php";
 include "include/sidebar.php";
+include "include/calendar.php";
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 
 if (!isset($_SESSION['iuid'])) {
     header("location: index.php");
@@ -42,82 +45,13 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
     $row['specialty'] = ($row['specialty']);
 }
 ?>
-
-<?php include "include/calendar.php"; ?>
-<style>
-    .container {
-        margin: 20px;
-    }
-
-    input[type="text"] {
-        padding: 10px;
-        width: 200px;
-    }
-
-    a {
-        text-decoration: none;
-    }
-
-    .table>:not(:last-child)>:last-child>* {
-        border-bottom: none !important;
-    }
-
-    ul {
-        padding: 0px !important;
-    }
-
-    .btn_1 i {
-        padding-right: 0px !important;
-
-    }
-
-    .btn_1 {
-        padding: 9px 15px !important;
-    }
-
-    .select2-container--default .select2-selection--multiple {
-        border: 1px solid #bbc1c9 !important;
-        display: block;
-        width: 100%;
-        padding: .375rem .75rem !important;
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 1.5;
-        color: #212529;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        border-radius: .25rem;
-        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-        word-wrap: normal;
-        text-transform: none;
-        margin: 0;
-
-    }
-
-    .center-buttons {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-
-    section.main_content.dashboard_part.large_header_bg {
-        background: #F6F7FB !important;
-    }
-</style>
-
+<link rel="stylesheet" href="css/schedule.css">
 
 
 
 <body class="crm_body_bg">
     <section class="main_content dashboard_part large_header_bg">
         <?php include 'include/header-2.php'; ?>
-
         <div class="main_content_iner overly_inner ">
             <div class="container-fluid p-0 ">
                 <div class="row">
@@ -146,7 +80,6 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         </div>
                     </div>
                     <div class="col-lg-5">
-
                         <div class="white_card">
                             <div class="white_card_body">
                                 <div class="container">
@@ -183,18 +116,11 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                                 <input class="form-control" id="specialty" name="specialty" readonly>
                                             </div>
                                         </div>
-                                        <!-- <div class="input-group mt-3">
-                                            <div class="input-group-text">
-                                                <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
-                                            </div>
-                                            <input type="date" class="form-control form-control-sm rounded-0" name="start_datetime" id="start_datetime">
-                                        </div> -->
                                         <div class="input-group mt-3">
                                             <div class="input-group-text">
                                                 <span>Start Time</span>
                                             </div>
                                             <input type="datetime-local" class="form-control form-control-sm rounded-0" name="start_datetime" id="start_datetime">
-
                                         </div>
                                         <div class="input-group mt-3">
                                             <div class="input-group-text">
@@ -232,9 +158,9 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                 <dt class="text-muted">Specialty</dt>
                                 <dd id="specialty"></dd>
                                 <dt class="text-muted">Start Time</dt>
-                                <dd id="start_datetime" class=""></dd>
+                                <dd id="start" class=""></dd>
                                 <dt class="text-muted">End Time</dt>
-                                <dd id="end_datetime" class=""></dd>
+                                <dd id="end" class=""></dd>
                             </dl>
                         </div>
                     </div>
@@ -251,6 +177,43 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(document).ready(function() {
+            var doctorId = $(this).val();
+
+            $.ajax({
+                url: 'api/get_doctor_schedule.php',
+                type: 'GET',
+                data: {
+                    doctor_id: doctorId
+                },
+                success: function(response) {
+                    var events = response;
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(events);
+                    calendar.refetchEvents();
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching doctor schedule: ' + error);
+                }
+            });
+
+            $.ajax({
+                url: 'api/get_specialty.php',
+                type: 'GET',
+                data: {
+                    doctor_id: doctorId
+                },
+                success: function(response) {
+                    $('#specialty').val(response);
+                    $('#specialtyField').show();
+                    console.log('Specialty received: ' + response);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching specialty: ' + error);
+                }
+            });
+        });
+
         $('#doctor').change(function() {
             var doctorId = $(this).val();
 
@@ -287,12 +250,92 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                 }
             });
         });
-    </script>
 
-
-    <script>
         var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
-    </script>
 
-    <script src="js/sched_script.js"></script>
+        var calendar;
+        var Calendar = FullCalendar.Calendar;
+        var events = [];
+        $(function() {
+            if (!!scheds) {
+                Object.keys(scheds).map(k => {
+                    var row = scheds[k]
+                    events.push({
+                        id: row.id,
+                        title: row.doctor,
+                        start: row.start_datetime,
+                        end: row.end_datetime
+                    });
+                })
+            }
+            var date = new Date()
+            var d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear()
+
+            calendar = new Calendar(document.getElementById('calendar'), {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    right: 'dayGridMonth,dayGridWeek,list',
+                    center: 'title',
+                },
+                selectable: true,
+                themeSystem: 'bootstrap',
+
+                events: events,
+                eventClick: function(info) {
+                    var _details = $('#event-details-modal')
+                    var id = info.event.id
+                    if (!!scheds[id]) {
+                        // _details.find('#title').text(scheds[id].title)
+                        _details.find('#title').text(scheds[id].doctor)
+                        _details.find('#start').text(scheds[id].sdate)
+                        _details.find('#end').text(scheds[id].edate)
+                        _details.find('#edit,#delete').attr('data-id', id)
+                        _details.modal('show')
+                    } else {
+                        alert("Event is undefined");
+                    }
+                },
+                eventDidMount: function(info) {},
+                editable: true
+            });
+
+            calendar.render();
+
+            $('#schedule-form').on('reset', function() {
+                $(this).find('input:hidden').val('')
+                $(this).find('input:visible').first().focus()
+            })
+
+            $('#edit').click(function() {
+                var id = $(this).attr('data-id')
+                if (!!scheds[id]) {
+                    var _form = $('#schedule-form')
+                    console.log(String(scheds[id].start_datetime), String(scheds[id].start_datetime).replace(" ", "\\t"))
+                    _form.find('[name="id"]').val(id)
+                    // _form.find('[name="title"]').val(scheds[id].title)
+                    _form.find('[name="doctor"]').val(scheds[id].doctor)
+                    _form.find('[name="start_datetime"]').val(String(scheds[id].start_datetime).replace(" ", "T"))
+                    _form.find('[name="end_datetime"]').val(String(scheds[id].end_datetime).replace(" ", "T"))
+                    $('#event-details-modal').modal('hide')
+                    _form.find('[name="title"]').focus()
+                } else {
+                    alert("Event is undefined");
+                }
+            })
+
+            $('#delete').click(function() {
+                var id = $(this).attr('data-id')
+                if (!!scheds[id]) {
+                    var _conf = confirm("Are you sure to delete this scheduled event?");
+                    if (_conf === true) {
+                        location.href = "./delete_schedule.php?id=" + id;
+                    }
+                } else {
+                    alert("Event is undefined");
+                }
+            })
+        })
+    </script>
     <?php include('include/footer.php'); ?>
