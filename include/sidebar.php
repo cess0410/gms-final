@@ -74,7 +74,7 @@
                     <span>List of Inquiries</span>
                 </div>
             </a>
-        <!-- </li>
+            <!-- </li>
         <li class="">
             <a href="view_calendar.php" aria-expanded="false">
                 <div class="nav_icon_small">
@@ -85,7 +85,7 @@
                 </div>
             </a>
         </li> -->
-        <!-- <li class="">
+            <!-- <li class="">
             <a href="view_calendar.php" aria-expanded="false">
                 <div class="nav_icon_small">
                     <img src="vendors/speak.png" alt="">
@@ -138,7 +138,7 @@
         <li>
             <a href="logs.php" aria-expanded=" false">
                 <div class="nav_icon_small">
-                    <img src="vendors/logo.png" alt="">
+                    <img src="vendors/log.png" alt="">
                 </div>
                 <div class="nav_title">
                     <span>Logs</span>

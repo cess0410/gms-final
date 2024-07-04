@@ -1,9 +1,5 @@
+<?php include_once 'templates/template_header.php'; ?>
 <?php
-session_start();
-ob_start();
-include "include/config.php";
-include "include/header.php";
-include "include/sidebar.php";
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -13,380 +9,325 @@ if (!isset($_SESSION['iuid'])) {
     ob_end_flush();
     exit();
 }
-
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
+    $result = $db->query($sql);
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $consultdate = $row['consultdate'];
+        $consultmonth = $row['consultmonth'];
+        $consultyear = $row['consultyear'];
+        $receiver = $row['receiver'];
+        $mode = $row['mode'];
+        $endorsement = $row['endorsement'];
+        $name = $row['name'];
+        $type = $row['type'];
+        $birthdate = $row['birthdate'];
+        $age = $row['age'];
+        $gender = $row['gender'];
+        $contact_no = $row['contact_no'];
+        $specialty = $row['specialty'];
+        $remarks = $row['remarks'];
+        $start_datetime = $row['start_datetime'];
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="fullcalendar/lib/main.min.css">
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="fullcalendar/lib/main.min.js"></script>
-
-</head>
-<style>
-    .card-header:first-child {
-        padding: 18px !important;
-    }
-
-    .fc-daygrid-dot-event .fc-event-title {
-        text-wrap: wrap !important;
-    }
-
-    .text-muted {
-        font-weight: 900;
-    }
-
-    dd {
-        margin-bottom: .5rem;
-        margin-left: 0;
-        font-weight: 700 !important;
-        color: black !important;
-    }
-
-    .btn_1 i {
-        font-size: 15px;
-        padding-right: 0px !important;
-    }
-
-    div#calendar {
-        background: #F6F7FB !important;
-        color: black !important;
-    }
-</style>
-
-<body class="crm_body_bg">
-    <section class="main_content dashboard_part large_header_bg">
-        <?php include 'include/header-2.php'; ?>
-        <div class="container-fluid p-0 ">
-            <div class="row ">
-                <div class="col-md-12">
-                    <div class="white_card_body ">
-                        <div class="container py-2" id="page-container">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div id="calendar" style="background: #F6F7FB!important;"></div>
-                                </div>
-                                <?php
-                                if (isset($_GET['id'])) {
-                                    $id = $_GET['id'];
-                                    $sql = "SELECT i.doctor, i.status, i.cancelled, i.rescheduled, i.diagnose, i.end_datetime, i.rescheduled_id, i.follow_up,ti.start_datetime, ti.name, ti.contact_no, ti.specialty, ti.remarks, 
-            FROM inquiry_tbl i
-            LEFT JOIN tblinquiry ti ON i.id = ti.id
-            WHERE i.id = '$id'";
-                                    $result = $db->query($sql);
-
-                                    if ($result && $result->num_rows > 0) {
-                                        $row = $result->fetch_assoc();
-                                        $start_datetime = $row['start_datetime'];
-                                        $name = $row['name'];
-                                        $contact_no = $row['contact_no'];
-                                        $specialty = $row['specialty'];
-                                        $remarks = $row['remarks'];
-                                        $start_datetime = $row['start_datetime'];
-                                        // $doctor = $row['doctor'];
-                                        // $status = $row['status'];
-                                        // $cancelled = $row['cancelled'];
-                                        // $rescheduled = $row['rescheduled'];
-                                        // $diagnose = $row['diagnose'];
-                                        // $end_datetime = $row['end_datetime'];
-                                        // $rescheduled_id = $row['rescheduled_id'];
-                                        // $follow_up = $row['follow_up'];
-
-                                        echo '<div class="col-md-4">
-                <form id="add">
-                    <div class="cardt rounded-0 shadow">
-                        <div class="card-header bg-gradient bg-primary text-light">
-                            <!-- Header Content -->
-                        </div>
-                        <div class="card-body">
-                            <div class="container-fluid">
-                                <input type="hidden" name="id" value="' . htmlspecialchars($id) . '">
-                                
-                                <div class="input-group mb-4 mt-2">
-                                    <div class="input-group-text">
-                                        <span class="">Consult Date</span>
-                                    </div>
-                                    <input type="text" class="form-control" name="consultdate" id="consultdate" value="' . date('F d, Y g:i A') . '" readonly>
-                                    <input type="hidden" class="form-control" name="consultmonth" id="consultmonth" value="' . date('m') . '">
-                                    <input type="hidden" class="form-control" name="consultyear" id="consultyear" value="' . date('Y') . '">
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <div class="input-group-text">
-                                        <span class="">Schedule</span>
-                                    </div>
-                                    <input type="datetime-local" class="form-control" name="start_datetime" id="start_datetime" value="' . $start_datetime . '" readonly>
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <div class="input-group-text">
-                                        <span class="">Name</span>
-                                    </div>
-                                    <input value="' . htmlspecialchars($name) . '" name="name" class="form-control" readonly>
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <div class="input-group-text">
-                                        <span class="">Contact Number</span>
-                                    </div>
-                                    <input value="' . htmlspecialchars($contact_no) . '" name="contact_no" class="form-control" readonly>
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <label class="input-group-text" for="specialty">Specialty</label>
-                                    <select class="form-select" id="specialty" name="specialty" disabled>';
-
-                                        // Fetch specialties from database and populate the dropdown
-                                        $sql_specialties = "SELECT * FROM `specialties`";
-                                        $result_specialties = $db->query($sql_specialties);
-                                        if ($result_specialties && $result_specialties->num_rows > 0) {
-                                            while ($specialty_row = $result_specialties->fetch_assoc()) {
-                                                $specialty_id = $specialty_row['id'];
-                                                $specialty_name = $specialty_row['specialty'];
-                                                $selected = ($specialty == $specialty_id) ? "selected" : "";
-                                                echo '<option value="' . htmlspecialchars($specialty_id) . '" ' . $selected . '>' . htmlspecialchars($specialty_name) . '</option>';
-                                            }
-                                        }
-
-                                        echo '              </select>
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <div class="input-group-text">
-                                        <span class="">Remarks</span>
-                                    </div>
-                                    <textarea class="form-control" id="remarks" aria-label="With textarea" readonly>' . htmlspecialchars($remarks) . '</textarea>
-                                </div>
-                                
-                                <div class="input-group mt-3">
-                                    <div class="input-group-text">
-                                        <span class="">Status</span>
-                                    </div>
-                                    <select class="form-select" id="status" name="status">
-                                        <option value="">--Select Status--</option>
-                                        <option value="Attended" ' . ($status == 'Attended' ? 'selected' : '') . '>Attended</option>
-                                        <option value="Cancelled" ' . ($status == 'Cancelled' ? 'selected' : '') . '>Cancelled</option>
-                                        <option value="Rescheduled" ' . ($status == 'Rescheduled' ? 'selected' : '') . '>Rescheduled</option>
-                                    </select>
-                                </div>';
-
-                                        // Display additional fields based on status
-                                        if ($status == 'Rescheduled') {
-                                            echo '<div id="rescheduledDateField" class="input-group mt-3">
-                    <div class="input-group-text">
-                        <span class="">Re-Scheduled</span>
-                    </div>
-                    <input type="datetime-local" class="form-control" id="rescheduled" name="rescheduled" value="' . $rescheduled . '">
-                  </div>';
-                                        } elseif ($status == 'Attended') {
-                                            echo '<div id="attendedField" class="input-group mt-3">
-                    <div class="input-group-text">
-                        <span class="">End Date</span>
-                    </div>
-                    <input type="datetime-local" class="form-control" id="end_datetime" name="end_datetime" value="' . $end_datetime . '">
-                 
-                    <input type="hidden" class="form-control" id="rescheduled_id" name="rescheduled_id" value="' . $rescheduled_id . '">
-                  </div>';
-                                        }
-
-                                        // Close the form and submit buttons
-                                        echo '          </div>
-                        </div>
-                        <div class="card-footer mt-3">
-                            <div class="text-center">
-                                <input type="hidden" name="id" value="' . htmlspecialchars($id) . '">
-                                <button class="btn btn-primary btn-sm rounded-0" type="submit" onclick="window.location.href=\'list_inquiries.php\'"><i class="fa fa-save"></i> Save</button>
-                                <a class="btn btn-default border btn-sm rounded-0" onclick="window.history.back();"><i class="fa fa-reset"></i> Cancel</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-              </div>';
-                                    } else {
-                                        echo '<p>No data found for this ID.</p>';
-                                    }
-                                } ?>
-
-                            </div>
-                        </div>
-                    </div>
-                    <?php include 'view_sched_modal.php'; ?>
-                    <div class="modal-footer rounded-0">
-                        <div class="text-end">
-                            <button class='btn_1 mb-2' style="padding: 9px 15px!important;" data-id="<?= $row['id']; ?>" onclick="redirectToUpdate(<?= $row['id']; ?>)"><i class="fas fa-edit"></i></button>
-
-                        </div>
-                    </div>
+        <style>
+            .tabs-lifted>.tab:is(input:checked) {
+                background-color: #00A651;
+                color: white;
+            }
+        </style>
+        <section class=" container m-3">
+            <div class="flex justify-between items-center p-4">
+                <h1 class="text-3xl font-bold text-zinc-900 ">View Details</h1>
+                <div class="flex items-center space-x-2">
+                    <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
+                    <span class="text-zinc-500 dark:text-zinc-400"><?php echo date('d F Y'); ?></span>
                 </div>
             </div>
-        </div>
-        <?php
-        $schedules = $db->query("SELECT id, name, specialty, start_datetime FROM `tblinquiry` WHERE id = $id");
+            <hr />
+            <div class="flex justify-center items-center">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                    <div class="col-span-1 rounded-lg my-5">
+                        <div class="col-span-1 rounded-lg my-5">
+                            <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
+                                <div class="card-body">
+                                    <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                        <div class="col-span-1 md:col-span-2 w-full text-center">
+                                            <div class="overflow-x-auto rounded-lg">
+                                                <div role="tablist" class="tabs tabs-lifted">
+                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Personal Information" checked="checked" />
+                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                                <?php
 
-        if ($schedules === false) {
-            die("Error executing query: " . $db->error);
-        }
-        $sched_res = [];
+                                                echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
 
-        foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
-            $row['sdate'] = date("F d, Y h:i A", strtotime($row['start_datetime']));
+                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+                                            <div class="input-group-text">
+                                                <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
+                                            </div>
+                                        <input type="text"  class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>
+                                        <input type="hidden" class="form-input flex-grow" name="consultmonth" id="consultmonth" value="' . date('m') . '">
+                                        <input type="hidden" class="form-input flex-grow" name="consultyear" id="consultyear" value="' . date('Y') . '"></div>';
+                                                echo '<div class="input-bordered flex items-center gap-2 mb-3">
+            <div >
+                <span class="">Receiver</span>
+            </div>
+            <select class="select input-bordered select-ghost flex-grow id="receiver" name="receiver">';
+                                                $sql4 = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
+                                                $result4 = $db->query($sql4);
+                                                if ($result4 && $result4->num_rows > 0) {
+                                                    while ($row4 = $result4->fetch_assoc()) {
+                                                        echo '<option value="' . $row4['userid'] . '">' . $row4['fname'] . ' ' . $row4['lname'] . '</option>';
+                                                    }
+                                                }
+                                                echo '</select>
+        </div>';
 
-            $sched_res[$row['id']] = $row;
-        }
-        ?>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                <div class="input-group-text">
+                    <span class="">Special Endorsement</span>
+                </div>
+                <input value="' . $endorsement . '" name="endorsement" class="form-input flex-grow">
+            </div>';
 
-<script>
-    function checkScheduleDate() {
-        var startDate = '<?= $row['start_datetime'] ?>';
+                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                <div class="input-group-text">
+                    <span class="">Name</span>
+                </div>
+                <input value="' . $name . '" name="name" class="form-input flex-grow">
+            </div>';
 
-        if (startDate.trim() === '') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'No Scheduled Date Available!',
-                text: 'Please check the scheduled date before inputting the End Date.',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
-        }
+                                                echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+            <label class='input-group-text' for='type'>Type of Client</label>
+            <select class='select input-bordered select-ghost flex-grow ' id='type' name='type'>";
+                                                echo "<option value='New'";
+                                                if ($type == 'New') echo 'selected';
+                                                echo ">New</option>";
+                                                echo "<option value='Old'";
+                                                if ($type == 'Old') echo 'selected';
+                                                echo ">Old</option>";
+                                                echo "</select>
+        </div>";
+
+
+                                                echo '<div  class="input-bordered flex items-center gap-2 mb-3">
+                <div class="input-group-text">
+                    <span class="">Mode of Consultation</span>
+                </div>
+                 <select class="select input-bordered select-ghost flex-grow " id="mode" name="mode">
+                                                    <option value="F2F"' . ($mode == 'F2F' ? ' selected' : '') . '>Face to Face</option>
+                                                    <option value="TC"' . ($mode == 'TC' ? ' selected' : '') . '>Teleconsultation</option>
+                                                </select>
+            </div>';
+
+                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                <div class="input-group-text">
+                    <span class="">Birthday</span>
+                </div>
+                <input class="form-input flex-grow" type="date" value="' . $birthdate . '" name="birthdate" id="birthdate" onchange="calculateAge()">
+            </div>';
+
+                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+                <div class="input-group-text">
+                    <span class="">Age</span>
+                </div>
+                <input type="text" value="' . $age . '" name="age" class="form-input flex-grow" id="age" readonly>
+            </div>';
+
+                                                echo "<div class='input input-bordered flex items-center gap-2 mb-3'>
+            <div class='input-group-text'>
+            <span class=''>Contact Number</span>
+            </div>";
+                                                echo "<input value='$contact_no' name='contact_no' class='form-input flex-grow'>
+                                         </div>";
+
+
+                                                echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+                                             <label class='input-group-text' for='type'>Gender</label>
+                                             <select class='select input-bordered select-ghost flex-grow' id='gender' name='gender'>";
+                                                echo "<option value='Male'";
+                                                if ($gender == 'Male') echo ' selected';
+                                                echo ">Male</option>";
+                                                echo "<option value='Female'";
+                                                if ($gender == 'Female') echo ' selected';
+                                                echo ">Female</option>";
+                                                echo "<option value='Others'";
+                                                if ($gender == 'Other/s') echo ' selected';
+                                                echo ">Other/s</option>";
+                                                echo "</select>
+                                     </div>";
+
+
+
+                                                echo '<div class="input-bordered flex items-center gap-2 mb-3">
+                                        <label class="input-group-text" for="">Specialty</label>';
+                                                echo "<select class='select input-bordered select-ghost flex-grow' id='specialty' name='specialty'>";
+                                                $sql5 = "SELECT * FROM `specialties`";
+                                                $result5 = $db->query($sql5);
+
+                                                if ($result5 && $result5->num_rows > 0) {
+                                                    while ($specialty_row = $result5->fetch_assoc()) {
+                                                        $specialty_id = $specialty_row['id'];
+                                                        $specialty_name = $specialty_row['specialty'];
+                                                        $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
+                                                        echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
+                                                    }
+                                                }
+                                                echo "</select></div>";
+                                                echo '<div class=" input-bordered flex items-center gap-2 mb-3">
+                                        <div class="input-group-text">
+                                            <span class="">Remarks</span>
+                                        </div>
+                                        <textarea class="input-bordered textarea flex-grow" id="remarks" name="remarks" aria-label="With textarea">' . $remarks . '</textarea>
+                                      </div>';
+
+
+
+
+                                                echo "<div class='input input-bordered flex items-center gap-2 mb-3 bg-gray-100'>
+                                              <div class='input-group-text'>
+                                                  <span class=''>Schedule</span>
+                                              </div>";
+                                                if (!empty($start_datetime)) {
+                                                    echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime' value='" . htmlspecialchars($start_datetime) . "' disabled>";
+                                                } else {
+                                                    echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime'>";
+                                                }
+                                                echo "</div>";
+
+
+                                                echo '<script>
+    var startDatetimeInput = document.getElementById("start_datetime");
+    var startDatetimeValue = ' . json_encode(!empty($start_datetime) ? htmlspecialchars($start_datetime) : "") . ';
+    if (startDatetimeValue !== "") {
+        startDatetimeInput.value = startDatetimeValue;
+        startDatetimeInput.disabled = true;
+    } else {
+        startDatetimeInput.disabled = false;
     }
-</script>
+</script></form>';
+                                            }
+                                        }
+                                                ?>
+                                                    </div>
 
-<script>
-    document.getElementById("consult").addEventListener("change", function() {
-        var rescheduledDateField = document.getElementById("rescheduledDateField");
-        if (this.value === "Rescheduled") {
-            rescheduledDateField.style.display = "block";
-        } else {
-            rescheduledDateField.style.display = "none";
-        }
-    });
-    document.getElementById("consult").addEventListener("change", function() {
-        var rescheduledDateField = document.getElementById("attendedField");
-        var diagnoseField = document.getElementById("diagnoseField");
-        var doctorField = document.getElementById("doctorField");
-        if (this.value === "Attended") {
-            rescheduledDateField.style.display = "block";
-            diagnoseField.style.display = "block";
-            doctorField.style.display = "block";
-        } else {
-            rescheduledDateField.style.display = "none";
-            diagnoseField.style.display = "none";
-            doctorField.style.display = "none";
-        }
-    });
+                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Status" />
+                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
 
 
 
-    $("#add").submit(function(event) {
-        event.preventDefault();
-        var formData = $(this).serialize();
-        var additionalData = {
-            'id': '<?= $id ?>',
-            'action': 'add'
-        };
-        formData += '&' + $.param(additionalData);
+                                                        <label class="label cursor-pointer">
+                                                            <span class="label-text">Attended</span>
+                                                            <input type="radio" name="radio-10" class="radio radio-success" value="0" checked="checked" />
+                                                        </label>
+                                                        <label class="label cursor-pointer">
+                                                            <span class="label-text">Cancelled</span>
+                                                            <input type="radio" name="radio-10" class="radio radio-success" value="0" />
+                                                        </label>
+                                                        <label class="label cursor-pointer">
+                                                            <span class="label-text">Rescheduled</span>
+                                                            <input type="radio" name="radio-10" class="radio radio-success" value="2" />
+                                                        </label>
 
-        $.ajax({
-            url: "api/save_sched.php",
-            type: "POST",
-            data: formData,
-            success: function(response) {
-                window.location.href = 'list_inquiries.php';
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
+
+
+
+                                                    </div>
+
+                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="History" />
+                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                                        History
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+        </section>
+        <script>
+            $(document).on("click", ".deleteBtn", function() {
+                var id = $(this).data("id");
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while updating the inquiry. Please try again later.'
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "api/specialty_action.php",
+                            type: "POST",
+                            data: {
+                                action: "delete",
+                                id: id
+                            },
+                            success: function(data) {
+                                loadspecialty();
+                                Swal.fire('Deleted!', 'Specialty has been deleted.', 'success');
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#updateForm").submit(function(event) {
+                event.preventDefault();
+                var id = $("#specialtyId").val();
+                var name = $("#updateName").val();
+                var specialty = $("#updateSpecialty").val();
+                $.ajax({
+                    url: "api/specialty_action.php",
+                    type: "POST",
+                    data: {
+                        action: "update",
+                        id: id,
+                        specialty: specialty
+                    },
+                    success: function(data) {
+                        $("#updateForm").hide();
+                        $("#specialtyForm").show();
+                        loadspecialty();
+                        Swal.fire('Success', 'Specialty updated successfully', 'success');
+                    }
+                });
+            });
+
+            $(document).on("click", ".editBtn", function() {
+                var id = $(this).data("id");
+                var specialty = $(this).closest("tr").find(".specialty").text();
+                $("#specialtyId").val(id);
+                $("#updateSpecialty").val(specialty);
+                $("#specialtyForm").hide();
+                $("#updateForm").show();
+            });
+
+
+            $("#cancelUpdate").click(function() {
+                $("#updateForm").hide();
+                $("#specialtyForm").show();
+            });
+
+
+            function loadspecialty() {
+                $.ajax({
+                    url: "api/specialty_action.php",
+                    type: "GET",
+                    data: {
+                        action: "fetch"
+                    },
+                    success: function(data) {
+                        $("#specialtyTable tbody").html(data);
+                    }
                 });
             }
-        });
-    });
-</script>
-<script>
-    function redirectToUpdate(id) {
-        window.location.href = `update_inquiry.php?id=${id}`;
-    }
-
-    function calculateAge() {
-        var dob = document.getElementById("birthdate").value;
-        var dobDate = new Date(dob);
-        var today = new Date();
-        sadasd
-        var age = today.getFullYear() - dobDate.getFullYear();
-        var m = today.getMonth() - dobDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
-            age--;
-        }
-        document.getElementById("age").value = age;
-    }
-</script>
-
-<script>
-    var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
-    var calendar;
-    var Calendar = FullCalendar.Calendar;
-    var events = [];
-    $(function() {
-        if (!!scheds) {
-            Object.keys(scheds).map(k => {
-                var row = scheds[k]
-                console.log(scheds[k])
-                events.push({
-                    id: row.id,
-                    title: row.name,
-                    consult: row.consultdate,
-                    specialty: row.specialty,
-                    start: row.start_datetime
-                });
-            })
-        }
-        var date = new Date()
-        var d = date.getDate(),
-            m = date.getMonth(),
-            y = date.getFullYear()
-
-        calendar = new Calendar(document.getElementById('calendar'), {
-            headerToolbar: {
-                left: 'prev,next today',
-                right: 'dayGridMonth,dayGridWeek,list',
-                center: 'title',
-            },
-            selectable: true,
-            themeSystem: 'bootstrap',
-            events: events,
-            eventClick: function(info) {
-                var _details = $('#event-details-modal')
-                var id = info.event.id
-                if (!!scheds[id]) {
-                    _details.find('#title').text(scheds[id].title)
-                    _details.find('#consult').text(scheds[id].consultdate);
-                    _details.find('#name').text(scheds[id].name)
-                    _details.find('#specialty').text(scheds[id].specialty)
-                    _details.find('#start').text(scheds[id].sdate)
-                    // _details.find('#end').text(scheds[id].edate)
-                    _details.find('#edit,#delete').attr('data-id', id)
-                    _details.modal('show')
-                }
-            },
-            eventDidMount: function(info) {},
-            // editable: true
-        });
-
-        calendar.render();
-
-    })
-</script>
-<?php include "include/footer.php"; ?>
+        </script>
+        <?php include_once 'templates/template_footer.php'; ?>

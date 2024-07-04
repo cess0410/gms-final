@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
     if ($status === "Rescheduled" || $status === "Cancelled" || $status === "Follow Up") {
-        $sql = "UPDATE tblinquiry SET doctor=?, status=?, cancelled=?, rescheduled=?, diagnose=?, end_datetime=?,end_month=?, end_year=?, follow_up=? WHERE id=?";
+        $sql = "UPDATE inquiry_tbl SET doctor=?, status=?, cancelled=?, rescheduled=?, diagnose=?, end_datetime=?,end_month=?, end_year=?, follow_up=? WHERE id=?";
         $stmt = $db->prepare($sql);
         if (!$stmt) {
             die('Prepare failed: ' . $db->error);
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $stmt->close();
 
-        $sql = "INSERT INTO tblinquiry (status, rescheduled,rescheduled_id) VALUES (?,?,?)";
+        $sql = "INSERT INTO inquiry_tbl (status, rescheduled,rescheduled_id) VALUES (?,?,?)";
         $stmt = $db->prepare($sql);
 
         if (!$stmt) {
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $stmt->close();
     } else {
-        $sql = "UPDATE tblinquiry SET doctor=?, status=?, diagnose=?, end_datetime=?, end_month=?, end_year=? WHERE id=?";
+        $sql = "UPDATE inquiry_tbl SET doctor=?, status=?, diagnose=?, end_datetime=?, end_month=?, end_year=? WHERE id=?";
         $stmt = $db->prepare($sql);
 
         if (!$stmt) {
@@ -77,13 +77,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 //     if ($status === "Rescheduled") {
-//         $sql = "UPDATE tblinquiry SET doctor=?, status = ?, rescheduled = ?, diagnose = ?, end_datetime = ? WHERE id = ?";
+//         $sql = "UPDATE inquiry_tbl SET doctor=?, status = ?, rescheduled = ?, diagnose = ?, end_datetime = ? WHERE id = ?";
 //         $stmt = $db->prepare($sql);
 //         $stmt->bind_param("sssssi", $doctor, $status, $rescheduled, $diagnose, $end_datetime, $_POST['id']);
 //         $stmt->execute();
 //         $stmt->close();
 //     } else {
-//         $sql = "UPDATE tblinquiry SET  doctor = ?, status = ?, rescheduled = ?, diagnose = ?, end_datetime = ?, WHERE id = ?";
+//         $sql = "UPDATE inquiry_tbl SET  doctor = ?, status = ?, rescheduled = ?, diagnose = ?, end_datetime = ?, WHERE id = ?";
 //         $stmt = $db->prepare($sql);
 //         $stmt->bind_param("ssssi", $doctor, $status, $diagnose, $end_datetime,  $_POST['id']);
 //         $stmt->execute();

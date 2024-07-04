@@ -10,42 +10,31 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
 if (!isset($_SESSION['iuid'])) {
     header("location: index.php");
     ob_end_flush();
     exit();
 }
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-}
-
 $queryDoctors = "SELECT d.id, d.name AS doctor_name, s.specialty AS specialty FROM doctors d LEFT JOIN specialties s ON d.specialty = s.id";
-$doctorsResult = $db->query($queryDoctors) or die($db->error);
+$doctorsResult = $db->query($queryDoctors);
 $doctorOptions = '';
 if ($doctorsResult->num_rows > 0) {
     $doctorOptions .= '<option value="" selected>Select a doctor</option>';
 
+    $selectedDoctorId = isset($_GET['doctor']) ? $_GET['doctor'] : '';
     while ($doctorRow = $doctorsResult->fetch_assoc()) {
-        $doctorOptions .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["doctor_name"] . '</option>';
+        $selected = ($doctorRow["id"] == $selectedDoctorId) ? 'selected' : '';
+        $doctorOptions .= '<option value="' . $doctorRow["id"] . '" ' . $selected . '>' . $doctorRow["doctor_name"] . '</option>';
     }
-}
-
-$schedules = $db->query("SELECT sl.id AS id, d.name AS name, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
-                        FROM doctors d 
-                        LEFT JOIN specialties s ON d.specialty = s.id 
-                        LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE start_datetime IS NOT NULL AND end_datetime IS NOT NULL");
-$sched_res = [];
-foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
-    $row['start_datetime'] = ($row['start_datetime']);
-    $row['end_datetime'] = ($row['end_datetime']);
-    $sched_res[$row['id']] = $row;
-    $row['doctor'] = ($row['name']);
-    $row['specialty'] = ($row['specialty']);
 }
 ?>
 <link rel="stylesheet" href="css/schedule.css">
+<style>
+    .fc-event-title {
+        text-wrap: wrap !important;
+    }
+</style>
 
 <body class="crm_body_bg">
     <section class="main_content dashboard_part large_header_bg">
@@ -68,7 +57,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-lg-7">
+                    <div class="col-lg-8">
                         <div class="white_card card_height_100 mb_30">
                             <div class="white_card_body pt-3 pb-6">
                                 <div class="bgc-white bd bdrs-3 p-20 mB-20">
@@ -77,7 +66,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-4">
                         <div class="white_card">
                             <div class="white_card_body">
                                 <div class="container">
@@ -89,40 +78,32 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                                         </div>
                                         <div class="col-lg-8">
                                             <div class="row justify-content-end">
-                                                <div class="col-lg-8 d-flex justify-content-end mb-3">
+                                                <div class="col-lg-8 d-flex justify-content-end">
                                                     <button class="btn_1" onclick="location.reload()"><i class="fa fa-sync"></i> Refresh</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <form action="api/schedule_action.php" method="post" id="schedule-form">
-                                        <div class="input-group mt-5">
-                                            <div class="input-group-text">
-                                                <span>Doctor</span>
-                                            </div>
-                                            <select class="form-select" id="doctor" name="doctor" required>
+                                    <form action="save_schedule.php" method="post" id="schedule-form">
+                                        <input type="hidden" name="id" value="">
+                                        <div class="form-group mb-2">
+                                            <label for="title" class="control-label">Doctor</label>
+                                            <select class="form-select" id="doctor" name="doctor">
                                                 <?php echo $doctorOptions; ?>
                                             </select>
                                         </div>
-                                        <div id="specialtyField" style="display: none;">
-                                            <div class="input-group mt-3">
-                                                <div class="input-group-text">
-                                                    <span>Specialty</span>
-                                                </div>
-                                                <input class="form-control" id="specialty" name="specialty" readonly>
-                                            </div>
+                                        <div class="form-group mb-2">
+                                            <label for="description" class="control-label">Specialty</label>
+                                            <input class="form-control" name="specialty" id="specialty" readonly>
+
                                         </div>
-                                        <div class="input-group mt-3">
-                                            <div class="input-group-text">
-                                                <span>Start Time</span>
-                                            </div>
-                                            <input type="datetime-local" class="form-control form-control-sm rounded-0" name="start_datetime" id="start_datetime">
+                                        <div class="form-group mb-2">
+                                            <label for="start_datetime" class="control-label">Start</label>
+                                            <input type="datetime-local" class="form-control" name="start_datetime" id="start_datetime" required>
                                         </div>
-                                        <div class="input-group mt-3">
-                                            <div class="input-group-text">
-                                                <span>End Time</span>
-                                            </div>
-                                            <input type="datetime-local" class="form-control form-control-sm rounded-0" name="end_datetime" id="end_datetime">
+                                        <div class="form-group mb-2">
+                                            <label for="end_datetime" class="control-label">End</label>
+                                            <input type="datetime-local" class="form-control" name="end_datetime" id="end_datetime" required>
                                         </div>
                                     </form>
                                 </div>
@@ -149,12 +130,12 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                         <div class="container-fluid">
                             <dl>
                                 <dt class="text-muted">Doctor</dt>
-                                <dd id="doctor_name"></dd>
+                                <dd id="doctor" class="fw-bold fs-4"></dd>
                                 <dt class="text-muted">Specialty</dt>
-                                <dd id="specialty"></dd>
-                                <dt class="text-muted">Start Time</dt>
+                                <dd id="specialty" class=""></dd>
+                                <dt class="text-muted">Start</dt>
                                 <dd id="start" class=""></dd>
-                                <dt class="text-muted">End Time</dt>
+                                <dt class="text-muted">End</dt>
                                 <dd id="end" class=""></dd>
                             </dl>
                         </div>
@@ -166,19 +147,131 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                             <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete"><i class="fa fa-trash"></i> Delete</button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <?php
+    $schedules = $db->query("SELECT sl.id AS id, d.id AS doctor_id, d.name AS doctor, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
+                        FROM doctors d 
+                        LEFT JOIN specialties s ON d.specialty = s.id 
+                        LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE start_datetime IS NOT NULL AND end_datetime IS NOT NULL");
+
+
+    $sched_res = [];
+    foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
+        $row['id'] = $row['id'];
+        $row['doctor'] = $row['doctor'];
+        $row['specialty'] = $row['specialty'];
+        $row['sdate'] = date("F d, Y h:i A", strtotime($row['start_datetime']));
+        $row['edate'] = date("F d, Y h:i A", strtotime($row['end_datetime']));
+        $sched_res[$row['id']] = $row;
+    }
+    ?>
+
     <script>
-        $(document).ready(function() {
-            var scheds = <?= json_encode($sched_res) ?>;
-            var calendar;
-            var Calendar = FullCalendar.Calendar;
-            var events = [];
+        var scheds = $.parseJSON('<?= json_encode($sched_res) ?>')
+
+        var calendar;
+        var Calendar = FullCalendar.Calendar;
+        var events = [];
+        $(function() {
+            if (!!scheds) {
+                Object.keys(scheds).map(k => {
+                    var row = scheds[k]
+                    events.push({
+                        id: row.id,
+                        title: row.doctor,
+                        specialty: row.specialty,
+                        start: row.start_datetime,
+                        end: row.end_datetime
+                    });
+                })
+            }
+            var date = new Date()
+            var d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear()
+
+            calendar = new Calendar(document.getElementById('calendar'), {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    right: 'dayGridMonth,dayGridWeek,list',
+                    center: 'title',
+                },
+                selectable: true,
+                themeSystem: 'bootstrap',
+                events: events,
+                eventClick: function(info) {
+                    var _details = $('#event-details-modal')
+                    var id = info.event.id
+                    if (!!scheds[id]) {
+                        _details.find('#doctor').text(scheds[id].doctor)
+                        _details.find('#specialty').text(scheds[id].specialty)
+                        _details.find('#start').text(scheds[id].sdate)
+                        _details.find('#end').text(scheds[id].edate)
+                        _details.find('#edit,#delete').attr('data-id', id)
+                        _details.modal('show')
+                    } else {
+                        alert("Event is undefined");
+                    }
+                },
+                eventDidMount: function(info) {},
+                editable: true
+            });
+
+            calendar.render();
+
+            $('#schedule-form').on('reset', function() {
+                $(this).find('input:hidden').val('')
+                $(this).find('input:visible').first().focus()
+            })
+
+            $('#edit').click(function() {
+                var id = $(this).attr('data-id');
+                if (!!scheds[id]) {
+                    var _form = $('#schedule-form');
+
+                    _form.find('[name="id"]').val(id);
+                    _form.find('[name="doctor"]').val(scheds[id].doctor_id);
+                    _form.find('[name="specialty"]').val(scheds[id].specialty);
+                    _form.find('[name="start_datetime"]').val(String(scheds[id].start_datetime).replace(" ", "T"));
+                    _form.find('[name="end_datetime"]').val(String(scheds[id].end_datetime).replace(" ", "T"));
+
+
+                    _form.find('[name="doctor"] option[value="' + scheds[id].doctor_id + '"]').prop('selected', true);
+
+                    $('#event-details-modal').modal('hide');
+                    _form.find('[name="title"]').focus();
+                } else {
+                    alert("Event is undefined");
+                }
+            });
+
+
+            $('#delete').click(function() {
+                var id = $(this).attr('data-id')
+                if (!!scheds[id]) {
+                    var _conf = confirm("Are you sure to delete this scheduled event?");
+                    if (_conf === true) {
+                        location.href = "./delete_schedule.php?id=" + id;
+                    }
+                } else {
+                    alert("Event is undefined");
+                }
+            })
+
+            var initialDoctorId = $('#doctor').val();
+            fetchDoctorSchedule(initialDoctorId);
+            fetchSpecialty(initialDoctorId);
+
+            $('#doctor').change(function() {
+                var selectedDoctorId = $(this).val();
+                fetchDoctorSchedule(selectedDoctorId);
+                fetchSpecialty(selectedDoctorId);
+            });
 
             function fetchDoctorSchedule(doctorId) {
                 $.ajax({
@@ -218,103 +311,7 @@ foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
                 });
             }
 
-            function populateModal(eventId) {
-                if (scheds[eventId]) {
-                    var eventDetails = scheds[eventId];
-
-                    $('#doctor_name').text(eventDetails.name);
-                    $('#specialty').text(eventDetails.specialty);
-                    $('#start').text(eventDetails.start_datetime);
-                    $('#end').text(eventDetails.end_datetime);
-
-                    $('#edit').attr('data-id', eventId); // Set data-id for edit button
-                    $('#delete').attr('data-id', eventId); // Set data-id for delete button
-
-                    $('#event-details-modal').modal('show');
-                } else {
-                    alert("Event details not found.");
-                }
-            }
-
-            // Initialize FullCalendar
-            calendar = new Calendar(document.getElementById('calendar'), {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,list'
-                },
-                themeSystem: 'bootstrap',
-                events: events, // Initialize with empty events
-                eventClick: function(info) {
-                    var eventId = info.event.id;
-                    populateModal(eventId); // Populate modal on event click
-                }
-            });
-
-            calendar.render(); // Render the calendar
-
-            // Initial fetch based on selected doctor
-            var initialDoctorId = $('#doctor').val();
-            fetchDoctorSchedule(initialDoctorId);
-            fetchSpecialty(initialDoctorId);
-
-            // Handle change in doctor selection
-            $('#doctor').change(function() {
-                var selectedDoctorId = $(this).val();
-                fetchDoctorSchedule(selectedDoctorId);
-                fetchSpecialty(selectedDoctorId);
-            });
-
-            $('#edit').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _form = $('#schedule-form');
-                    var event = scheds[eventId];
-                    var selectedDoctorId = event.name;
-                    $('#doctor').val(selectedDoctorId);
-                    console.log(selectedDoctorId);
-
-                    _form.find('[name="id"]').val(eventId);
-                    _form.find('[name="doctor"]').val(event.name);
-                    _form.find('[name="specialty"]').val(event.specialty);
-                    _form.find('[name="start_datetime"]').val(event.start_datetime);
-                    _form.find('[name="end_datetime"]').val(event.end_datetime);
-
-
-                    // Show specialty field if it was hidden
-                    $('#specialtyField').show();
-
-                    // Hide modal and focus on title input
-                    $('#event-details-modal').modal('hide');
-                    _form.find('[name="title"]').focus();
-                } else {
-                    alert("Event details not found.");
-                }
-            });
-
-
-
-            // Handle delete button click inside the modal
-            $('#delete').click(function() {
-                var eventId = $(this).attr('data-id');
-                if (scheds[eventId]) {
-                    var _conf = confirm("Are you sure to delete this scheduled event?");
-                    if (_conf === true) {
-                        // Implement deletion logic here
-                        // Example: location.href = "./delete_schedule.php?id=" + eventId;
-                    }
-                } else {
-                    alert("Event details not found.");
-                }
-            });
-
-            // Reset form handling if needed
-            $('#schedule-form').on('reset', function() {
-                $(this).find('input:hidden').val('');
-                $(this).find('input:visible').first().focus();
-            });
-
-        });
+        })
     </script>
 
 
