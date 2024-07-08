@@ -18,8 +18,16 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
     $contact_no = $db->real_escape_string($_POST['contact_no']);
     $specialty = $db->real_escape_string($_POST['specialty']);
     $remarks = $db->real_escape_string($_POST['remarks']);
-    $start_datetime = $db->real_escape_string($_POST['start_datetime']);
-
+    $schedule = $db->real_escape_string($_POST['schedule']);
+    $status = $db->real_escape_string($_POST['status']);
+    $cancelled = $db->real_escape_string($_POST['cancelled']);
+    $attended = $db->real_escape_string($_POST['attended']);
+    $doctor = $db->real_escape_string($_POST['doctor']);
+    $diagnose = $db->real_escape_string($_POST['diagnose']);
+    $end_datetime = $db->real_escape_string($_POST['end_datetime']);
+    $rescheduled = $db->real_escape_string($_POST['rescheduled']);
+    $rescheduled_id = $db->real_escape_string($_POST['rescheduled_id']);
+    $follow_up = $id;
 
     // Update query
     $sql = "UPDATE tblinquiry SET
@@ -37,8 +45,16 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
                 contact_no = '$contact_no',
                 specialty = '$specialty',
                 remarks = '$remarks',
-                start_datetime = '$start_datetime'
-                WHERE id = $id";
+                schedule = '$schedule',
+                status = '$status',
+                cancelled = '$cancelled',
+                attended = '$attended',
+                doctor = '$doctor',
+                diagnose = '$diagnose',
+                end_datetime = '$end_datetime',
+                rescheduled = '$rescheduled',
+                rescheduled_id = '$rescheduled_id',
+                follow_up = '$follow_up' WHERE id = $id";
 
     if ($db->query($sql) === TRUE) {
         // Log the insert operation
@@ -46,8 +62,8 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
         $user_id = $_SESSION['iuid'];
 
         // Insert data into tblinquiry_logs
-        $log_sql = "INSERT INTO tblinquiry_logs (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, start_datetime, inquiry_id, user_id)
-                VALUES ('$consultdate', '$consultmonth', '$consultyear', '$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$start_datetime', '$insert_id', '$user_id')";
+        $log_sql = "INSERT INTO tblinquiry_logs (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, schedule, status, cancelled, attended, doctor, diagnose, end_datetime, rescheduled, rescheduled_id, follow_up, inquiry_id, user_id)
+                VALUES ('$consultdate', '$consultmonth', '$consultyear', '$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$schedule', '$status', '$cancelled', '$attended', '$doctor', '$diagnose', '$end_datetime', '$rescheduled', '$rescheduled_id', '$follow_up', '$insert_id', '$user_id')";
         if ($db->query($log_sql) === TRUE) {
             echo "New record created successfully";
         } else {

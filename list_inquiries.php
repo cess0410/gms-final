@@ -63,8 +63,8 @@ if (!isset($_SESSION['iuid'])) {
                                     ?>
                                     <td style="color: black; font-weight: 400">
                                         <?php
-                                        if (!empty($row['start_datetime'])) {
-                                            echo date('F d, Y h:i A', strtotime($row['start_datetime']));
+                                        if (!empty($row['schedule'])) {
+                                            echo date('F d, Y h:i A', strtotime($row['schedule']));
                                         } else {
                                             echo "";
                                         }

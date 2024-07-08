@@ -89,7 +89,17 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         <?php foreach ($doctors as $row) : ?>
                                             <tr>
                                                 <td class="doctorName" style='color: black; font-weight: 400'><?= $row['name']; ?></td>
-                                                <td class="doctorSpecialty" style='color: black; font-weight: 400'><?= $row['specialty']; ?></td>
+                                                <?php
+                                                $sql = "SELECT * FROM `specialties` WHERE id = '{$row['specialty']}'";
+                                                $result1 = $db->query($sql);
+
+                                                if ($result1 && $result1->num_rows > 0) {
+                                                    $specialty_row = $result1->fetch_assoc();
+                                                    $specialty_name = $specialty_row['specialty'];
+                                                    echo "<td class='doctorSpecialty' style='color: black; font-weight: 400'>$specialty_name</td>";
+                                                }
+                                                ?>
+
 
                                                 <td class="text-right">
                                                     <button class='editBtn btn btn-info' data-id="<?= $row['id']; ?>">Edit</button>

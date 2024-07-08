@@ -1,7 +1,8 @@
 <?php include_once 'templates/template_header.php'; ?>
 <div class="flex justify-center items-center mt-10 mb-5">
     <div class="w-full max-w-xl">
-        <form id="UpdateinquiryForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 class="text-3xl mb-3 text-center">View Details</h1>
+        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <?php
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
@@ -23,7 +24,7 @@
                     $contact_no = $row['contact_no'];
                     $specialty = $row['specialty'];
                     $remarks = $row['remarks'];
-                    $schedule = $row['schedule'];
+                    $start_datetime = $row['start_datetime'];
                     echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
                     echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
                                             <div class="input-group-text">
@@ -152,28 +153,24 @@
                                               <div class='input-group-text'>
                                                   <span class=''>Schedule</span>
                                               </div>";
-                    if (!empty($schedule)) {
-                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule' value='" . htmlspecialchars($schedule) . "' disabled>";
+                    if (!empty($start_datetime)) {
+                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime' value='" . htmlspecialchars($start_datetime) . "' disabled>";
                     } else {
-                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule'>";
+                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime'>";
                     }
                     echo "</div>";
 
 
                     echo '<script>
-    var startDatetimeInput = document.getElementById("schedule");
-    var startDatetimeValue = ' . json_encode(!empty($schedule) ? htmlspecialchars($schedule) : "") . ';
+    var startDatetimeInput = document.getElementById("start_datetime");
+    var startDatetimeValue = ' . json_encode(!empty($start_datetime) ? htmlspecialchars($start_datetime) : "") . ';
     if (startDatetimeValue !== "") {
         startDatetimeInput.value = startDatetimeValue;
         startDatetimeInput.disabled = true;
     } else {
         startDatetimeInput.disabled = false;
     }
-</script>';
-                    echo '<div class="text-center mt-4">
-                     <button type="submit" class="btn" name="action" value="add"><i class="fas fa-save"></i>          SAVE</button>
-                    <a class="btn" href="list_inquiries.php"><i class="fa fa-window-close"></i>          CANCEL</a>
-                </div></form> ';
+</script></form>';
                 }
             }
             ?>
@@ -181,18 +178,6 @@
 </div>
 
 <script>
-    function calculateAge() {
-        var dob = document.getElementById("birthdate").value;
-        var dobDate = new Date(dob);
-        var today = new Date();
-        var age = today.getFullYear() - dobDate.getFullYear();
-        var m = today.getMonth() - dobDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
-            age--;
-        }
-        document.getElementById("age").value = age;
-    }
-
     $("#UpdateinquiryForm").submit(function(event) {
         // alert("hello");
         event.preventDefault();
@@ -209,7 +194,7 @@
             data: formData,
             success: function(response) {
                 // $("#UpdateinquiryForm")[0].reset();
-                window.location.href = 'list_inquiries.php';
+                window.location.href = 'index.php';
             },
             error: function(xhr, status, error) {
                 // Handle errors

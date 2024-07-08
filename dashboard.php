@@ -32,7 +32,7 @@
                     <div class="card-body">
                         <?php
                         $total_count = 0;
-                        $sql = "SELECT COUNT(*) as total_count FROM tblinquiry WHERE status = 'Attended'";
+                        $sql = "SELECT COUNT(*) as total_count FROM inquiry_tbl WHERE status = 'Attended'";
                         $result = $db->query($sql);
 
                         if ($result && $result->num_rows > 0) {
@@ -74,7 +74,7 @@
                         <?php
                         $total_count = 0;
                         $rescheduled = 0;
-                        $sql = "SELECT COUNT(*) as total_count FROM tblinquiry WHERE status = 'Rescheduled'";
+                        $sql = "SELECT COUNT(*) as total_count FROM inquiry_tbl WHERE status = 'Rescheduled'";
                         $result = $db->query($sql);
 
 
@@ -95,26 +95,19 @@
                     <div class="card-body">
                         <?php
                         $total_count = 0;
-                        $sql = "SELECT DISTINCT name, COUNT(name) AS total_count
-                    FROM (
-                        SELECT DISTINCT name, id, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) AS reschedule_number
-                        FROM tblinquiry
-                        WHERE status = 'Rescheduled'
-                    ) AS subquery
-                    WHERE reschedule_number <= 3
-                    GROUP BY name;";
+                        $sql = "SELECT DISTINCT name, COUNT(name) AS total_count FROM (SELECT DISTINCT name, id, ROW_NUMBER() OVER 
+                        (PARTITION BY name ORDER BY id) AS reschedule_number FROM inquiry_tbl WHERE status = 'Rescheduled') AS subquery
+                        WHERE reschedule_number <= 3 GROUP BY name;";
                         $result = $db->query($sql);
 
                         if ($result && $result->num_rows > 0) {
-                            // Fetch each row and display total_count
                             while ($row = $result->fetch_assoc()) {
                                 $total_count = $row['total_count'];
                                 $name = $row['name'];
-                                echo ' <h4 class="text-xl text-center font-bold">' . $name . ' : ' . $total_count . '</h4>';
+                                echo ' <h4 class="text-6xl text-center font-bold">' . $name . ' : ' . $total_count . '</h4>';
                             }
                         } else {
-                            // Handle case where no rows are returned
-                            echo '<h4>0</h4>'; // or any default value
+                            echo '<h4 class="text-6xl text-center font-bold">0</h4>';
                         }
                         ?>
                         <button type="button" class="btn mt-1 mb-1 w-100" onclick="window.location.href='list_inquiries.php'">VIEW</button>
@@ -131,9 +124,7 @@
                 $id = $_GET['id'];
             }
             $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count
-    FROM tblinquiry AS i
-    LEFT JOIN specialties AS s ON i.specialty = s.id
-    GROUP BY DATE(i.start_datetime), i.specialty");
+    FROM tblinquiry AS i LEFT JOIN specialties AS s ON i.specialty = s.id GROUP BY DATE(i.start_datetime), i.specialty");
 
             if ($schedules === false) {
                 die("Error executing query: " . $db->error);
@@ -147,11 +138,9 @@
             }
             ?>
 
-            <!-- End Calendar -->
         </div>
         <div class="col-span-1 md:col-span-6 lg:col-span-5">
             <div class="grid grid-cols-1 gap-4">
-                <!-- Doctors -->
                 <div class="col-span-1 md:col-span-6 lg:col-span-3">
                     <?php
                     $sql = "SELECT * FROM doctors LEFT JOIN specialties ON doctors.specialty = specialties.id";
@@ -168,7 +157,6 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Specialty</th>
-                                        <!-- <th>Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,15 +175,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- Doctors End -->
-                <!-- Specialties -->
-
-
             </div>
-
         </div>
-
-
     </div>
 </div>
 <script>

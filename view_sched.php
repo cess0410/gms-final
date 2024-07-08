@@ -11,7 +11,7 @@ if (!isset($_SESSION['iuid'])) {
 }
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $sql = "SELECT * FROM tblinquiry WHERE id = '$id'";
+    $sql = "SELECT * FROM tblinquiry WHERE id = '$id';";
     $result = $db->query($sql);
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -29,7 +29,18 @@ if (isset($_GET['id'])) {
         $contact_no = $row['contact_no'];
         $specialty = $row['specialty'];
         $remarks = $row['remarks'];
-        $start_datetime = $row['start_datetime'];
+        $schedule = $row['schedule'];
+        $status = $row['status'];
+        $cancelled = $row["cancelled"];
+        $attended = $row["attended"];
+        $doctor = $row["doctor"];
+        $diagnose = $row["diagnose"];
+        $end_datetime = $row["end_datetime"];
+        $rescheduled = $row["rescheduled"];
+        $rescheduled_id = $row["rescheduled_id"];
+        $follow_up = $id;
+
+
 ?>
         <style>
             .tabs-lifted>.tab:is(input:checked) {
@@ -37,220 +48,203 @@ if (isset($_GET['id'])) {
                 color: white;
             }
         </style>
-        <section class=" container m-3">
-            <div class="flex justify-between items-center p-4">
-                <h1 class="text-3xl font-bold text-zinc-900 ">View Details</h1>
-                <div class="flex items-center space-x-2">
-                    <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
-                    <span class="text-zinc-500 dark:text-zinc-400"><?php echo date('d F Y'); ?></span>
-                </div>
-            </div>
+        <section class="container m-3">
             <hr />
-            <div class="flex justify-center items-center">
-                <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                    <div class="col-span-1 rounded-lg my-5">
-                        <div class="col-span-1 rounded-lg my-5">
-                            <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
-                                <div class="card-body">
-                                    <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                                        <div class="col-span-1 md:col-span-2 w-full text-center">
-                                            <div class="overflow-x-auto rounded-lg">
-                                                <div role="tablist" class="tabs tabs-lifted">
-                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Personal Information" checked="checked" />
-                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                                                <?php
 
-                                                echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
-
-                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
-                                            <div class="input-group-text">
-                                                <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
-                                            </div>
-                                        <input type="text"  class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>
-                                        <input type="hidden" class="form-input flex-grow" name="consultmonth" id="consultmonth" value="' . date('m') . '">
-                                        <input type="hidden" class="form-input flex-grow" name="consultyear" id="consultyear" value="' . date('Y') . '"></div>';
-                                                echo '<div class="input-bordered flex items-center gap-2 mb-3">
-            <div >
-                <span class="">Receiver</span>
-            </div>
-            <select class="select input-bordered select-ghost flex-grow id="receiver" name="receiver">';
-                                                $sql4 = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
-                                                $result4 = $db->query($sql4);
-                                                if ($result4 && $result4->num_rows > 0) {
-                                                    while ($row4 = $result4->fetch_assoc()) {
-                                                        echo '<option value="' . $row4['userid'] . '">' . $row4['fname'] . ' ' . $row4['lname'] . '</option>';
-                                                    }
-                                                }
-                                                echo '</select>
-        </div>';
-
-                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
-                <div class="input-group-text">
-                    <span class="">Special Endorsement</span>
-                </div>
-                <input value="' . $endorsement . '" name="endorsement" class="form-input flex-grow">
-            </div>';
-
-                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
-                <div class="input-group-text">
-                    <span class="">Name</span>
-                </div>
-                <input value="' . $name . '" name="name" class="form-input flex-grow">
-            </div>';
-
-                                                echo "<div class='input-bordered flex items-center gap-2 mb-3'>
-            <label class='input-group-text' for='type'>Type of Client</label>
-            <select class='select input-bordered select-ghost flex-grow ' id='type' name='type'>";
-                                                echo "<option value='New'";
-                                                if ($type == 'New') echo 'selected';
-                                                echo ">New</option>";
-                                                echo "<option value='Old'";
-                                                if ($type == 'Old') echo 'selected';
-                                                echo ">Old</option>";
-                                                echo "</select>
-        </div>";
-
-
-                                                echo '<div  class="input-bordered flex items-center gap-2 mb-3">
-                <div class="input-group-text">
-                    <span class="">Mode of Consultation</span>
-                </div>
-                 <select class="select input-bordered select-ghost flex-grow " id="mode" name="mode">
-                                                    <option value="F2F"' . ($mode == 'F2F' ? ' selected' : '') . '>Face to Face</option>
-                                                    <option value="TC"' . ($mode == 'TC' ? ' selected' : '') . '>Teleconsultation</option>
-                                                </select>
-            </div>';
-
-                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
-                <div class="input-group-text">
-                    <span class="">Birthday</span>
-                </div>
-                <input class="form-input flex-grow" type="date" value="' . $birthdate . '" name="birthdate" id="birthdate" onchange="calculateAge()">
-            </div>';
-
-                                                echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
-                <div class="input-group-text">
-                    <span class="">Age</span>
-                </div>
-                <input type="text" value="' . $age . '" name="age" class="form-input flex-grow" id="age" readonly>
-            </div>';
-
-                                                echo "<div class='input input-bordered flex items-center gap-2 mb-3'>
-            <div class='input-group-text'>
-            <span class=''>Contact Number</span>
-            </div>";
-                                                echo "<input value='$contact_no' name='contact_no' class='form-input flex-grow'>
-                                         </div>";
-
-
-                                                echo "<div class='input-bordered flex items-center gap-2 mb-3'>
-                                             <label class='input-group-text' for='type'>Gender</label>
-                                             <select class='select input-bordered select-ghost flex-grow' id='gender' name='gender'>";
-                                                echo "<option value='Male'";
-                                                if ($gender == 'Male') echo ' selected';
-                                                echo ">Male</option>";
-                                                echo "<option value='Female'";
-                                                if ($gender == 'Female') echo ' selected';
-                                                echo ">Female</option>";
-                                                echo "<option value='Others'";
-                                                if ($gender == 'Other/s') echo ' selected';
-                                                echo ">Other/s</option>";
-                                                echo "</select>
-                                     </div>";
-
-
-
-                                                echo '<div class="input-bordered flex items-center gap-2 mb-3">
-                                        <label class="input-group-text" for="">Specialty</label>';
-                                                echo "<select class='select input-bordered select-ghost flex-grow' id='specialty' name='specialty'>";
-                                                $sql5 = "SELECT * FROM `specialties`";
-                                                $result5 = $db->query($sql5);
-
-                                                if ($result5 && $result5->num_rows > 0) {
-                                                    while ($specialty_row = $result5->fetch_assoc()) {
-                                                        $specialty_id = $specialty_row['id'];
-                                                        $specialty_name = $specialty_row['specialty'];
-                                                        $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
-                                                        echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
-                                                    }
-                                                }
-                                                echo "</select></div>";
-                                                echo '<div class=" input-bordered flex items-center gap-2 mb-3">
-                                        <div class="input-group-text">
-                                            <span class="">Remarks</span>
-                                        </div>
-                                        <textarea class="input-bordered textarea flex-grow" id="remarks" name="remarks" aria-label="With textarea">' . $remarks . '</textarea>
-                                      </div>';
-
-
-
-
-                                                echo "<div class='input input-bordered flex items-center gap-2 mb-3 bg-gray-100'>
-                                              <div class='input-group-text'>
-                                                  <span class=''>Schedule</span>
-                                              </div>";
-                                                if (!empty($start_datetime)) {
-                                                    echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime' value='" . htmlspecialchars($start_datetime) . "' disabled>";
-                                                } else {
-                                                    echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='start_datetime' id='start_datetime'>";
-                                                }
-                                                echo "</div>";
-
-
-                                                echo '<script>
-    var startDatetimeInput = document.getElementById("start_datetime");
-    var startDatetimeValue = ' . json_encode(!empty($start_datetime) ? htmlspecialchars($start_datetime) : "") . ';
-    if (startDatetimeValue !== "") {
-        startDatetimeInput.value = startDatetimeValue;
-        startDatetimeInput.disabled = true;
-    } else {
-        startDatetimeInput.disabled = false;
-    }
-</script></form>';
-                                            }
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div class="col-span-1 rounded-lg my-2">
+                    <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
+                        <div class="card-body">
+                            <div class="col-span-1 md:col-span-2 w-full text-center">
+                                <div class="overflow-x-auto rounded-lg">
+                                    <div role="tablist" class="tabs tabs-lifted">
+                                        <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Personal Information" checked="checked" />
+                                        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                    <?php
+                                    echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+<div class="input-group-text">
+<span class=""><img src="vendors/calender_icon.svg" alt=""></span>
+</div>
+<input type="text"  class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>
+<input type="hidden" class="form-input flex-grow" name="consultmonth" id="consultmonth" value="' . date('m') . '">
+<input type="hidden" class="form-input flex-grow" name="consultyear" id="consultyear" value="' . date('Y') . '"></div>';
+                                    echo '<div class="input-bordered flex items-center gap-2 mb-3">
+<div>
+<span class="">Receiver :</span>
+</div>
+<select class="select input-bordered select-ghost flex-grow id="receiver" name="receiver" style="pointer-events: none">';
+                                    $sql4 = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
+                                    $result4 = $db->query($sql4);
+                                    if ($result4 && $result4->num_rows > 0) {
+                                        while ($row4 = $result4->fetch_assoc()) {
+                                            echo '<option value="' . $row4['userid'] . '">' . $row4['fname'] . ' ' . $row4['lname'] . '</option>';
                                         }
-                                                ?>
-                                                    </div>
+                                    }
+                                    echo '</select></div>';
 
-                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Status" />
-                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+<div class="input-group-text">
+<span class="">Special Endorsement  :</span>
+</div>
+<input value="' . $endorsement . '" name="endorsement" class="form-input flex-grow" readonly>
+</div>';
+
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+<div class="input-group-text">
+<span class="">Name :</span>
+</div>
+<input value="' . $name . '" name="name" class="form-input flex-grow">
+</div>';
+
+                                    echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+<label class='input-group-text' for='type'>Type of Client   :</label>
+<select class='select input-bordered select-ghost flex-grow ' id='type' name='type' style='pointer-events: none'>";
+                                    echo "<option value='New'";
+                                    if ($type == 'New') echo 'selected';
+                                    echo ">New</option>";
+                                    echo "<option value='Old'";
+                                    if ($type == 'Old') echo 'selected';
+                                    echo ">Old</option>";
+                                    echo "</select>
+</div>";
+
+                                    echo '<div  class="input-bordered flex items-center gap-2 mb-3">
+<div class="input-group-text">
+<span class="">Mode of Consultation :</span>
+</div>
+<select class="select input-bordered select-ghost flex-grow " id="mode" name="mode" style="pointer-events: none">
+<option value="F2F"' . ($mode == 'F2F' ? ' selected' : '') . '>Face to Face</option>
+<option value="TC"' . ($mode == 'TC' ? ' selected' : '') . '>Teleconsultation</option>
+</select>
+</div>';
+
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+<div class="input-group-text">
+<span class="">Birthday :</span>
+</div>
+<input class="form-input flex-grow" type="date" value="' . $birthdate . '" name="birthdate" id="birthdate" onchange="calculateAge()" readonly>
+</div>';
+
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+<div class="input-group-text">
+<span class="">Age  :</span>
+</div>
+<input type="text" value="' . $age . '" name="age" class="form-input flex-grow" id="age" readonly>
+</div>';
+
+                                    echo "<div class='input input-bordered flex items-center gap-2 mb-3'>
+<div class='input-group-text'>
+<span class=''>Contact Number   :</span>
+</div>";
+                                    echo "<input value='$contact_no' name='contact_no' class='form-input flex-grow' readonly>
+</div>";
+
+                                    echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+<label class='input-group-text' for='type'>Gender   :</label>
+<select class='select input-bordered select-ghost flex-grow' id='gender' name='gender' style='pointer-events: none'>";
+                                    echo "<option value='Male'";
+                                    if ($gender == 'Male') echo ' selected';
+                                    echo ">Male</option>";
+                                    echo "<option value='Female'";
+                                    if ($gender == 'Female') echo ' selected';
+                                    echo ">Female</option>";
+                                    echo "<option value='Others'";
+                                    if ($gender == 'Other/s') echo ' selected';
+                                    echo ">Other/s</option>";
+                                    echo "</select>
+</div>";
+
+                                    echo '<div class="input-bordered flex items-center gap-2 mb-3">
+<label class="input-group-text" for="">Specialty    :</label>';
+                                    echo "<select class='select input-bordered select-ghost flex-grow' id='specialty' name='specialty' style='pointer-events: none'>";
+                                    $sql5 = "SELECT * FROM `specialties`";
+                                    $result5 = $db->query($sql5);
+
+                                    if ($result5 && $result5->num_rows > 0) {
+                                        while ($specialty_row = $result5->fetch_assoc()) {
+                                            $specialty_id = $specialty_row['id'];
+                                            $specialty_name = $specialty_row['specialty'];
+                                            $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
+                                            echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
+                                        }
+                                    }
+                                    echo "</select></div>";
+                                    echo '<div class=" input-bordered flex items-center gap-2 mb-3">
+<div class="input-group-text">
+<span class="">Remarks  :</span>
+</div>
+<textarea class="input-bordered textarea flex-grow" id="remarks" name="remarks" aria-label="With textarea">' . $remarks . '</textarea>
+</div>';
 
 
+                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+<div class="input-group-text">
+<span class="">Schedule Date and Time: </span>';
+                                    if (!empty($schedule)) {
+                                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule' value=' " . $schedule .  "'>";
+                                    } else {
+                                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule'>";
+                                    }
+                                    echo "</div></div>";
 
-                                                        <label class="label cursor-pointer">
-                                                            <span class="label-text">Attended</span>
-                                                            <input type="radio" name="radio-10" class="radio radio-success" value="0" checked="checked" />
-                                                        </label>
-                                                        <label class="label cursor-pointer">
-                                                            <span class="label-text">Cancelled</span>
-                                                            <input type="radio" name="radio-10" class="radio radio-success" value="0" />
-                                                        </label>
-                                                        <label class="label cursor-pointer">
-                                                            <span class="label-text">Rescheduled</span>
-                                                            <input type="radio" name="radio-10" class="radio radio-success" value="2" />
-                                                        </label>
-
-
-
-
-                                                    </div>
-
-                                                    <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="History" />
-                                                    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                                                        History
-                                                    </div>
-                                                </div>
-                                            </div>
-
+                                    echo '<script>
+var startDatetimeInput = document.getElementById("schedule");
+var startDatetimeValue = ' . json_encode(!empty($schedule) ? htmlspecialchars($schedule) : "") . ';
+if (startDatetimeValue !== "") {
+startDatetimeInput.value = startDatetimeValue;
+startDatetimeInput.disabled = true;
+} else {
+startDatetimeInput.disabled = false;
+}
+</script>';
+                                }
+                            }
+                                    ?>
                                         </div>
+
+
+
+
+                                        <!-- Tab 2 -->
+
+                                        <?php include_once 'view_sched2.php'; ?>
+
+
+                                        <!-- Tab 3 -->
+
+                                        <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="History" />
+                                        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                            History
+                                        </div>
+
+
+
+
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
 
         </section>
         <script>
+            function calculateAge() {
+                var dob = document.getElementById("birthdate").value;
+                var dobDate = new Date(dob);
+                var today = new Date();
+                var age = today.getFullYear() - dobDate.getFullYear();
+                var m = today.getMonth() - dobDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
+                    age--;
+                }
+                document.getElementById("age").value = age;
+            }
             $(document).on("click", ".deleteBtn", function() {
                 var id = $(this).data("id");
                 Swal.fire({
@@ -330,4 +324,5 @@ if (isset($_GET['id'])) {
                 });
             }
         </script>
+
         <?php include_once 'templates/template_footer.php'; ?>

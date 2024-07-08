@@ -3,19 +3,19 @@
     <div class="w-full max-w-xl">
         <form id="inquiryForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
-                <span>Date and Time</span>
+                <span>Date and Time:</span><br>
                 <input type="text" class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="<?php echo date('F d, Y g:i A'); ?>" readonly>
                 <input type="hidden" name="consultmonth" id="consultmonth" value="<?php echo date('m'); ?>">
                 <input type="hidden" name="consultyear" id="consultyear" value="<?php echo date('Y'); ?>">
             </div>
 
-            <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Receiver</span>
+            <div class="input-bordered flex items-center gap-2 mb-3">
+                <span>Receiver:</span><br>
                 <?php
                 $sql = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
                 $result = mysqli_query($db, $sql);
                 ?>
-                <select class="select input-bordered select-ghost flex-grow bg-gray-100" id="receiver" name="receiver" disabled>
+                <select class="select input-bordered select-ghost flex-grow bg-gray-100" id="receiver" name="receiver" readonly>
                     <?php while ($row = mysqli_fetch_assoc($result)) : ?>
                         <option value="<?php echo $row['userid']; ?>"><?php echo $row['fname'] . ' ' . $row['lname']; ?></option>
                     <?php endwhile; ?>
@@ -23,7 +23,7 @@
             </div>
 
             <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Mode of Consultation</span>
+                <span>Mode of Consultation:</span><br>
                 <select class="select input-bordered select-ghost flex-grow" id="mode">
                     <option value="F2F" selected>Face to Face</option>
                     <option value="TC">TC</option>
@@ -31,17 +31,17 @@
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Special Endorsement</span>
+                <span>Special Endorsement:</span><br>
                 <input type="text" class="form-input flex-grow" id="endorsement">
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Name</span>
+                <span>Name:</span><br>
                 <input type="text" class="form-input flex-grow" id="name" oninput="capitalizeInput(this)" required>
             </div>
 
             <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Type of Client</span>
+                <span>Type of Client:</span><br>
                 <select class="select input-bordered select-ghost flex-grow" id="type">
                     <option value="New" selected>New</option>
                     <option value="Old">Old</option>
@@ -49,17 +49,17 @@
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Birthdate</span>
+                <span>Birthdate:</span><br>
                 <input type="date" class="form-input flex-grow" id="birthdate" onchange="calculateAge()" required>
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Age</span>
+                <span>Age:</span><br>
                 <input type="text" class="form-input flex-grow" id="age" readonly>
             </div>
 
             <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Gender</span>
+                <span>Gender:</span><br>
                 <select class="select input-bordered select-ghost flex-grow" id="gender">
                     <option value="Male" selected>Male</option>
                     <option value="Female">Female</option>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Contact No.</span>
+                <span>Contact No.:</span><br>
                 <input type="text" class="form-input flex-grow" id="contact_no" placeholder="09XX-XXX-XXXX" value="09" maxlength="13">
             </div>
             <?php
@@ -83,20 +83,20 @@
             }
             ?>
             <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Specialty</span>
+                <span>Specialty:</span><br>
                 <select class="select input-bordered select-ghost flex-grow" id="specialty" name="specialty">
                     <?php echo $specialtyOptions; ?>
                 </select>
             </div>
 
             <div class=" input-bordered flex items-center gap-2 mb-3">
-                <span>Remarks</span>
+                <span>Remarks:</span><br>
                 <textarea class="input-bordered textarea flex-grow" id="remarks" aria-label="With textarea"></textarea>
             </div>
 
             <div class="input input-bordered flex items-center gap-2 mb-3">
-                <span>Scheduled Date</span>
-                <input type="datetime-local" class="form-input flex-grow" id="start_datetime" value="">
+                <span>Scheduled Date:</span><br>
+                <input type="datetime-local" class="form-input flex-grow" id="schedule" value="">
             </div>
             <div class="w-full text-center">
                 <button type="button" id="submitForm" class="btn bg-green-500"></i>Add Inquiry</button>
@@ -179,11 +179,11 @@
     }
 
     $(document).ready(function() {
-        $('#start_datetime').on('change', function() {
+        $('#schedule').on('change', function() {
             console.log('Selected date/time:', $(this).val());
         });
 
-        $('#start_datetime').on('input', function() {
+        $('#schedule').on('input', function() {
             if ($(this).val() === '') {
                 console.log('Input field is empty');
             }
@@ -229,7 +229,7 @@
                 contact_no: $("#contact_no").val(),
                 specialty: $("#specialty").val(),
                 remarks: $("#remarks").val(),
-                start_datetime: $("#start_datetime").val()
+                schedule: $("#schedule").val()
             };
 
             // Send AJAX request

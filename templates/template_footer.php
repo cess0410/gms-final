@@ -86,8 +86,26 @@
                 <span class="ml-3 text-base">Logs</span>
             </a>
         </li>
+        <!-- <li>
+            <div class="flex items-center space-x-1 my-5">
+                <div class="w-10 rounded-full">
+                    <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
+                </div>
+                <span class="text-zinc-500 dark:text-zinc-400"><?php echo date('d F Y'); ?></span>
+            </div>
+        </li> -->
+
+
+
+
+
+
+
+
+
+
     </ul>
-</div>
+
 </div>
 </body>
 

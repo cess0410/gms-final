@@ -155,9 +155,7 @@ if ($doctorsResult->num_rows > 0) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <?php
     $schedules = $db->query("SELECT sl.id AS id, d.id AS doctor_id, d.name AS doctor, s.specialty AS specialty, sl.start_datetime AS start_datetime, sl.end_datetime AS end_datetime
-                        FROM doctors d 
-                        LEFT JOIN specialties s ON d.specialty = s.id 
-                        LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE start_datetime IS NOT NULL AND end_datetime IS NOT NULL");
+                        FROM doctors d LEFT JOIN specialties s ON d.specialty = s.id LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE start_datetime IS NOT NULL AND end_datetime IS NOT NULL");
 
 
     $sched_res = [];
@@ -256,7 +254,7 @@ if ($doctorsResult->num_rows > 0) {
                 if (!!scheds[id]) {
                     var _conf = confirm("Are you sure to delete this scheduled event?");
                     if (_conf === true) {
-                        location.href = "./delete_schedule.php?id=" + id;
+                        location.href = "api/delete_schedule.php?id=" + id;
                     }
                 } else {
                     alert("Event is undefined");
@@ -313,7 +311,5 @@ if ($doctorsResult->num_rows > 0) {
 
         })
     </script>
-
-
 
     <?php include('include/footer.php'); ?>

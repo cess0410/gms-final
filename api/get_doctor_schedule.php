@@ -35,12 +35,8 @@ while ($row = $result->fetch_assoc()) {
     );
 }
 
-
 header('Content-Type: application/json');
 echo json_encode($events);
-
-
-
 
     // Query to fetch schedule data for the selected doctor
     // $sql = "SELECT d.id, d.name AS title, sl.sched_date, sl.am, sl.pm FROM doctors d LEFT JOIN schedule_list sl ON sl.doctor = d.id WHERE doctor = $doctorId";
