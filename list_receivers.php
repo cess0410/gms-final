@@ -13,7 +13,7 @@ if (!isset($_SESSION['iuid'])) {
 
 <section class=" container m-3">
     <div class="flex justify-between items-center p-4">
-        <h1 class="text-3xl font-bold text-zinc-900 ">List of Recievers</h1>
+        <h1 class="text-3xl font-bold text-zinc-900 ">List of Receivers</h1>
         <div class="flex items-center space-x-2">
             <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" />
             <span class="text-zinc-500 dark:text-zinc-400"><?php echo date('d F Y'); ?></span>

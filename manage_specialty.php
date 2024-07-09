@@ -1,5 +1,4 @@
-<?php include_once 'templates/template_header.php'; ?>
-<?php
+<?php include_once 'templates/template_header.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -8,9 +7,7 @@ if (!isset($_SESSION['iuid'])) {
     header("location: index.php");
     ob_end_flush();
     exit();
-}
-?>
-
+} ?>
 <section class=" container m-3">
     <div class="flex justify-between items-center p-4">
         <h1 class="text-3xl font-bold text-zinc-900 ">List of Specialties</h1>
@@ -20,10 +17,9 @@ if (!isset($_SESSION['iuid'])) {
         </div>
     </div>
     <hr />
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="col-span-1 rounded-lg my-5">
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-col-2 md:grid-cols-6 gap-6">
+        <div class="col-span-2 rounded-lg my-5">
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div class="grid grid-cols-1 gap-4  w-full text-center">
                 </div>
                 <div class="grid grid-cols-1 gap-4  w-full text-center">
@@ -35,24 +31,22 @@ if (!isset($_SESSION['iuid'])) {
                                     <label class="font-bold text-lg">Specialty:</label>
                                     <input type="text" class="input input-bordered w-full " id="specialty">
 
-                                    <button type="submit" class="btn btn-success mt-3">Add Specialty</button>
+                                    <button type="submit" class="btn btn-success mt-3 text-white">Add Specialty</button>
                                 </form>
                                 <form id="updateForm" class="text-left" style="display: none;">
                                     <input type="hidden" id="specialtyId">
                                     <label class="font-bold text-lg">Specialty:</label>
                                     <input type="text" id="updateSpecialty" class="input input-bordered w-full  mb-3">
-                                    <button type="submit" class="btn btn-info">Update Specialty</button>
-                                    <button type="button" id="cancelUpdate" class="btn btn-danger">Cancel</button>
+                                    <button type="submit" class="btn btn-info" style="color: white">Update Specialty</button>
+                                    <button type="button" id="cancelUpdate" class="btn btn-danger" style="color: white">Cancel</button>
                                 </form>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-span-1 rounded-lg my-5">
+        <div class="col-span-4 rounded-lg my-5">
             <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

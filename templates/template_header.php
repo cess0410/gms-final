@@ -1,7 +1,7 @@
 <?php
 session_start();
 ob_start();
-include_once "include/config.php";
+include_once "api/config.php";
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -28,6 +28,7 @@ if (!isset($_SESSION['iuid'])) {
     <link rel="stylesheet" href="vendors/themify-icons.css">
     <link href="/gms-final/assets/css/daisy.css" rel="stylesheet" type="text/css" />
     <link href="/gms-final/assets/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="/gms-final/assets/css/all.min1.css" rel="stylesheet" type="text/css" />
     <script src="/gms-final/assets/js/tailwind.js"></script>
     <script src="/gms-final/assets/js/sweetalert.js"></script>
 
@@ -36,6 +37,10 @@ if (!isset($_SESSION['iuid'])) {
     body {
 
         font-family: 'mulish', sans-serif !important;
+    }
+
+    h2.card-title.my-5.m-auto {
+        color: white !important;
     }
 </style>
 

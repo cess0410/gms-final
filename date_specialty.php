@@ -189,7 +189,6 @@ if (isset($_GET['id']) && isset($_GET['unixTimestamp'])) {
                 </div>
             </div>
         </div>
-        </div>
     </section>
     <script>
         new DataTable('#inquiryTable');
@@ -236,9 +235,9 @@ if (isset($_GET['id']) && isset($_GET['unixTimestamp'])) {
 
     <script>
         $(document).ready(function() {
-            $('#inquiryTable').DataTable( {
-    responsive: true
-} );;
+            $('#inquiryTable').DataTable({
+                responsive: true
+            });;
         });
     </script>
 </body>

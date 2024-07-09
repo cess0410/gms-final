@@ -40,7 +40,32 @@ if (isset($_GET['id'])) {
         $rescheduled_id = $row["rescheduled_id"];
         $follow_up = $id;
 
+        $sql_specialties = "SELECT * FROM `specialties`";
+        $result_specialties = $db->query($sql_specialties);
+        $specialty_options = '';
+        if ($result_specialties && $result_specialties->num_rows > 0) {
+            while ($specialty_row = $result_specialties->fetch_assoc()) {
+                $specialty_id = $specialty_row['id'];
+                $specialty_name = htmlspecialchars($specialty_row['specialty']);
+                $selected = ($specialty == $specialty_id) ? "selected" : "";
+                $specialty_options .= "<option value='$specialty_id' $selected>$specialty_name</option>";
+            }
+        } else {
+            $specialty_options .= "<option value=''>No specialties found</option>";
+        }
 
+        $doctorOptionsString = '';
+        $specialty = $row['specialty'];
+        $queryDoctors = "SELECT * FROM doctors WHERE specialty = '$specialty';";
+        $doctorsResult = $db->query($queryDoctors) or die($db->error);
+
+        if ($doctorsResult->num_rows > 0) {
+            while ($doctorRow = $doctorsResult->fetch_assoc()) {
+                $doctorOptionsString .= '<option value="' . $doctorRow["id"] . '">' . $doctorRow["name"] . '</option>';
+            }
+        } else {
+            $doctorOptionsString .= '<option value="">No doctors found for this specialty</option>';
+        }
 ?>
         <style>
             .tabs-lifted>.tab:is(input:checked) {
@@ -212,15 +237,7 @@ startDatetimeInput.disabled = false;
 
 
                                         <!-- Tab 3 -->
-
-                                        <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="History" />
-                                        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                                            History
-                                        </div>
-
-
-
-
+                                        <?php include_once 'view_sched3.php'; ?>
 
 
                                     </div>
@@ -230,8 +247,6 @@ startDatetimeInput.disabled = false;
                     </div>
                 </div>
             </div>
-
-
         </section>
         <script>
             function calculateAge() {

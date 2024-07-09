@@ -13,7 +13,6 @@ $sql = "SELECT * FROM specialties";
 $result = mysqli_query($db, $sql);
 $specialties = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-// Fetch doctors for the table
 $sql = "SELECT * FROM doctors";
 $result = mysqli_query($db, $sql);
 $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -28,10 +27,9 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
         </div>
     </div>
     <hr />
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="col-span-1 rounded-lg my-5">
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-col-2 md:grid-cols-6 gap-6">
+        <div class="col-span-2 rounded-lg my-5">
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div class="grid grid-cols-1 gap-4  w-full text-center">
                 </div>
                 <div class="grid grid-cols-1 gap-4  w-full text-center">
@@ -48,7 +46,7 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                             <option value="<?php echo $specialty['id']; ?>"><?php echo $specialty['specialty']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <button type="submit" class="btn btn-success mt-3">Add Doctor</button>
+                                    <button type="submit" class="btn btn-success mt-3 text-white">Add Doctor</button>
                                 </form>
                                 <form id="updateForm" class="text-left" style="display: none;">
                                     <input type="hidden" id="doctorId">
@@ -60,18 +58,16 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                             <option value="<?php echo $specialty['id']; ?>"><?php echo $specialty['specialty']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <button type="submit" class="btn btn-info mt-3">Update Doctor</button>
-                                    <button type="button" id="cancelUpdate" class="btn btn-error mt-3">Cancel</button>
+                                    <button type="submit" class="btn btn-info mt-3 text-white">Update Doctor</button>
+                                    <button type="button" id="cancelUpdate" class="btn btn-error mt-3 text-white">Cancel</button>
                                 </form>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-span-1 rounded-lg my-5">
+        <div class="col-span-4 rounded-lg my-5">
             <div class="card card-compact bg-base-100 w-full  h-full shadow-xl">
                 <div class="card-body">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -99,16 +95,13 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     echo "<td class='doctorSpecialty' style='color: black; font-weight: 400'>$specialty_name</td>";
                                                 }
                                                 ?>
-
-
                                                 <td class="text-right">
-                                                    <button class='editBtn btn btn-info' data-id="<?= $row['id']; ?>">Edit</button>
-                                                    <button class='deleteBtn btn btn-error' data-id="<?= $row['id']; ?>">Delete</button>
+                                                    <button class='editBtn btn btn-info text-white' data-id="<?= $row['id']; ?>"><i class="fas fa-edit"></i></button>
+                                                    <button class='deleteBtn btn btn-error text-white' data-id="<?= $row['id']; ?>">Delete</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
-                                    <!-- foot -->
                                     <tfoot>
                                         <tr>
                                             <th>Name</th>
@@ -118,7 +111,6 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                     </tfoot>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -130,10 +122,8 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
 </section>
 <script>
     $(document).ready(function() {
-
         new DataTable('#doctorTable');
 
-        // Add Doctor
         $("#doctorForm").submit(function(event) {
             // event.preventDefault();
             // var id = $("#doctorId").val();
@@ -155,8 +145,6 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 }
             });
         });
-
-        // Edit Doctor
         $(document).on("click", ".editBtn", function() {
             var id = $(this).data("id");
             var name = $(this).closest("tr").find(".doctorName").text();
@@ -168,7 +156,6 @@ $doctors = mysqli_fetch_all($result, MYSQLI_ASSOC);
             $("#updateForm").show();
         });
 
-        // Update Doctor
         $("#updateForm").submit(function(event) {
             // event.preventDefault();
             var id = $("#doctorId").val();

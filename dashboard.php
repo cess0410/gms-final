@@ -32,7 +32,7 @@
                     <div class="card-body">
                         <?php
                         $total_count = 0;
-                        $sql = "SELECT COUNT(*) as total_count FROM inquiry_tbl WHERE status = 'Attended'";
+                        $sql = "SELECT COUNT(*) as total_count FROM tblinquiry WHERE status = 'Attended'";
                         $result = $db->query($sql);
 
                         if ($result && $result->num_rows > 0) {
@@ -74,7 +74,7 @@
                         <?php
                         $total_count = 0;
                         $rescheduled = 0;
-                        $sql = "SELECT COUNT(*) as total_count FROM inquiry_tbl WHERE status = 'Rescheduled'";
+                        $sql = "SELECT COUNT(*) as total_count FROM tblinquiry WHERE status = 'Rescheduled'";
                         $result = $db->query($sql);
 
 
@@ -96,7 +96,7 @@
                         <?php
                         $total_count = 0;
                         $sql = "SELECT DISTINCT name, COUNT(name) AS total_count FROM (SELECT DISTINCT name, id, ROW_NUMBER() OVER 
-                        (PARTITION BY name ORDER BY id) AS reschedule_number FROM inquiry_tbl WHERE status = 'Rescheduled') AS subquery
+                        (PARTITION BY name ORDER BY id) AS reschedule_number FROM tblinquiry WHERE status = 'Rescheduled') AS subquery
                         WHERE reschedule_number <= 3 GROUP BY name;";
                         $result = $db->query($sql);
 
@@ -117,21 +117,21 @@
             </div>
 
         </div>
-        <div class="col-span-1 md:col-span-6 lg:col-span-7">
+        <div class="col-span-1 md:col-span-6 lg:col-span-7 mr-5">
             <div id="calendar" class="m-3"></div>
             <?php
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $schedules = $db->query("SELECT i.id, i.start_datetime, DATE(i.start_datetime) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count
-    FROM tblinquiry AS i LEFT JOIN specialties AS s ON i.specialty = s.id GROUP BY DATE(i.start_datetime), i.specialty");
+            $schedules = $db->query("SELECT i.id, i.schedule, DATE(i.schedule) AS date, i.specialty as specialty_id, s.specialty, COUNT(*) AS specialty_count
+    FROM tblinquiry AS i LEFT JOIN specialties AS s ON i.specialty = s.id GROUP BY DATE(i.schedule), i.specialty");
 
             if ($schedules === false) {
                 die("Error executing query: " . $db->error);
             }
             $specialty_counts = [];
             foreach ($schedules->fetch_all(MYSQLI_ASSOC) as $row) {
-                $row['sdate'] = date("F d, Y", strtotime($row['start_datetime']));
+                $row['sdate'] = date("F d, Y", strtotime($row['schedule']));
                 $sched_res[$row['id']] = $row;
                 $key = $row['sdate'] . '_' . $row['specialty'];
                 $specialty_counts[$key] = $row['specialty_count'];
@@ -206,7 +206,7 @@
                         id: row.specialty_id,
                         title: row.specialty + ' (' + inquiry_count + ')',
                         allDay: true,
-                        start: row.start_datetime
+                        start: row.schedule
                     });
                 });
             }

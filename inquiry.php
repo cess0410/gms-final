@@ -1,9 +1,16 @@
 <?php include_once 'templates/template_header.php'; ?>
+
+<link rel="stylesheet" href="assets/css/style1.css">
+<style>
+    span {
+        font-size: 16px !important;
+    }
+</style>
 <div class="flex justify-center items-center mt-10 mb-5">
     <div class="w-full max-w-xl">
         <form id="inquiryForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
-                <span>Date and Time:</span><br>
+                <img aria-hidden="true" alt="calendar-icon" src="https://openui.fly.dev/openui/24x24.svg?text=📅" /><br>
                 <input type="text" class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="<?php echo date('F d, Y g:i A'); ?>" readonly>
                 <input type="hidden" name="consultmonth" id="consultmonth" value="<?php echo date('m'); ?>">
                 <input type="hidden" name="consultyear" id="consultyear" value="<?php echo date('Y'); ?>">
@@ -128,16 +135,15 @@
         $(this).val(phoneNumber);
     });
     $('form#inquiryForm').submit(function(event) {
-        var phoneNumber = $('#contact_no').val().replace(/\D/g, ''); // Remove non-digits
+        var phoneNumber = $('#contact_no').val().replace(/\D/g, '');
         if (phoneNumber.length !== 11 || phoneNumber.length === 0 || phoneNumber.length > 11) {
             alert('Please enter a valid 11-digit phone number.');
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault();
         } else {
             var firstDigit = phoneNumber.charAt(0);
-            // Check if the first digit is valid for a Philippine mobile number (0, 9)
             if (firstDigit !== '0' && firstDigit !== '9') {
                 alert('Please enter a valid Philippine mobile number starting with 09.');
-                event.preventDefault(); // Prevent form submission
+                event.preventDefault();
             }
         }
     });
@@ -189,9 +195,7 @@
             }
         });
         $("#submitForm").click(function() {
-            // Prevent default form submission
             event.preventDefault();
-            // Validate Name field
             var name = $("#name").val();
             if (name.trim() == '') {
                 Swal.fire({
@@ -202,7 +206,6 @@
                 return;
             }
 
-            // Validate Birthdate field
             var birthdate = $("#birthdate").val();
             if (birthdate.trim() == '') {
                 Swal.fire({
@@ -213,7 +216,6 @@
                 return;
             }
 
-            // Serialize form data
             var formData = {
                 consultdate: $("#consultdate").val(),
                 consultmonth: $("#consultmonth").val(),
@@ -232,16 +234,13 @@
                 schedule: $("#schedule").val()
             };
 
-            // Send AJAX request
             $.ajax({
                 url: "api/inquiry_add.php",
                 type: "POST",
                 data: formData,
                 success: function(response) {
-                    // Clear form fields after successful submission
                     $("#inquiryForm")[0].reset();
 
-                    // Optionally, you can show a success message
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -249,7 +248,6 @@
                     });
                 },
                 error: function(xhr, status, error) {
-                    // Handle errors
                     console.error(xhr.responseText);
                 }
             });

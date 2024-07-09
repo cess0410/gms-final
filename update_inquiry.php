@@ -212,7 +212,6 @@
                 window.location.href = 'list_inquiries.php';
             },
             error: function(xhr, status, error) {
-                // Handle errors
                 console.error(xhr.responseText);
                 Swal.fire({
                     icon: 'error',
