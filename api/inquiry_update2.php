@@ -2,7 +2,6 @@
 include 'config.php';
 if (isset($_POST['action']) && $_POST['action'] === "update") {
 
-    // Validate and sanitize inputs
     $id = $_POST['id'];
     $consultdate = $db->real_escape_string($_POST['consultdate']);
     $consultmonth = $db->real_escape_string($_POST['consultmonth']);
@@ -18,10 +17,9 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
     $contact_no = $db->real_escape_string($_POST['contact_no']);
     $specialty = $db->real_escape_string($_POST['specialty']);
     $remarks = $db->real_escape_string($_POST['remarks']);
-    $start_datetime = $db->real_escape_string($_POST['start_datetime']);
+    $schedule = $db->real_escape_string($_POST['schedule']);
 
 
-    // Update query
     $sql = "UPDATE tblinquiry SET
                 consultdate = '$consultdate',
                 consultmonth = '$consultmonth',
@@ -37,7 +35,7 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
                 contact_no = '$contact_no',
                 specialty = '$specialty',
                 remarks = '$remarks',
-                start_datetime = '$start_datetime'
+                schedule = '$schedule',
                 WHERE id = $id";
 
     if ($db->query($sql) === TRUE) {
@@ -46,8 +44,8 @@ if (isset($_POST['action']) && $_POST['action'] === "update") {
         $user_id = $_SESSION['iuid'];
 
         // Insert data into tblinquiry_logs
-        $log_sql = "INSERT INTO tblinquiry_logs (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, start_datetime, inquiry_id, user_id)
-                VALUES ('$consultdate', '$consultmonth', '$consultyear', '$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$start_datetime', '$insert_id', '$user_id')";
+        $log_sql = "INSERT INTO tblinquiry_logs (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, schedule, inquiry_id, user_id)
+                VALUES ('$consultdate', '$consultmonth', '$consultyear', '$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$schedule', '$insert_id', '$user_id')";
         if ($db->query($log_sql) === TRUE) {
             echo "New record created successfully";
         } else {

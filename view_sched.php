@@ -85,58 +85,61 @@ if (isset($_GET['id'])) {
                                     <div role="tablist" class="tabs tabs-lifted">
                                         <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Personal Information" checked="checked" />
                                         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                                    <?php
-                                    echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+                                            <!-- <div class="card bg-base-100 w-full flex-center max-w-xl shrink-0 shadow-2xl"> -->
+                                            <form class="card-body mt-3">
+
+                                        <?php
+                                        echo '<input type="hidden" name="id" id="id" value="<? echo $id; ?>">';
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
 <div class="input-group-text">
 <span class=""><img src="vendors/calender_icon.svg" alt=""></span>
 </div>
 <input type="text"  class="form-input flex-grow" name="consultdate" id="consultdate" placeholder="Date and Time" value="' . date('F d, Y g:i A') . '" readonly>
 <input type="hidden" class="form-input flex-grow" name="consultmonth" id="consultmonth" value="' . date('m') . '">
 <input type="hidden" class="form-input flex-grow" name="consultyear" id="consultyear" value="' . date('Y') . '"></div>';
-                                    echo '<div class="input-bordered flex items-center gap-2 mb-3">
+                                        echo '<div class="input-bordered flex items-center gap-2 mb-3">
 <div>
-<span class="">Receiver :</span>
+<label class="">Receiver :</span>
 </div>
-<select class="select input-bordered select-ghost flex-grow id="receiver" name="receiver" style="pointer-events: none">';
-                                    $sql4 = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
-                                    $result4 = $db->query($sql4);
-                                    if ($result4 && $result4->num_rows > 0) {
-                                        while ($row4 = $result4->fetch_assoc()) {
-                                            echo '<option value="' . $row4['userid'] . '">' . $row4['fname'] . ' ' . $row4['lname'] . '</option>';
+<select class="select input-bordered select-ghost flex-grow id="receiver" name="receiver" style="pointer-events: none,">';
+                                        $sql4 = "SELECT * FROM users Where userid = '" . $_SESSION['iuid'] . "'";
+                                        $result4 = $db->query($sql4);
+                                        if ($result4 && $result4->num_rows > 0) {
+                                            while ($row4 = $result4->fetch_assoc()) {
+                                                echo '<option value="' . $row4['userid'] . '">' . $row4['fname'] . ' ' . $row4['lname'] . '</option>';
+                                            }
                                         }
-                                    }
-                                    echo '</select></div>';
+                                        echo '</select></div>';
 
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
 <div class="input-group-text">
 <span class="">Special Endorsement  :</span>
 </div>
 <input value="' . $endorsement . '" name="endorsement" class="form-input flex-grow" readonly>
 </div>';
 
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
 <div class="input-group-text">
 <span class="">Name :</span>
 </div>
 <input value="' . $name . '" name="name" class="form-input flex-grow">
 </div>';
 
-                                    echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+                                        echo "<div class='input-bordered flex items-center gap-2 mb-3'>
 <label class='input-group-text' for='type'>Type of Client   :</label>
 <select class='select input-bordered select-ghost flex-grow ' id='type' name='type' style='pointer-events: none'>";
-                                    echo "<option value='New'";
-                                    if ($type == 'New') echo 'selected';
-                                    echo ">New</option>";
-                                    echo "<option value='Old'";
-                                    if ($type == 'Old') echo 'selected';
-                                    echo ">Old</option>";
-                                    echo "</select>
+                                        echo "<option value='New'";
+                                        if ($type == 'New') echo 'selected';
+                                        echo ">New</option>";
+                                        echo "<option value='Old'";
+                                        if ($type == 'Old') echo 'selected';
+                                        echo ">Old</option>";
+                                        echo "</select>
 </div>";
 
-                                    echo '<div  class="input-bordered flex items-center gap-2 mb-3">
+                                        echo '<div  class="input-bordered flex items-center gap-2 mb-3">
 <div class="input-group-text">
-<span class="">Mode of Consultation :</span>
+<label class="">Mode of Consultation :</label>
 </div>
 <select class="select input-bordered select-ghost flex-grow " id="mode" name="mode" style="pointer-events: none">
 <option value="F2F"' . ($mode == 'F2F' ? ' selected' : '') . '>Face to Face</option>
@@ -144,76 +147,76 @@ if (isset($_GET['id'])) {
 </select>
 </div>';
 
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 ">
 <div class="input-group-text">
 <span class="">Birthday :</span>
 </div>
 <input class="form-input flex-grow" type="date" value="' . $birthdate . '" name="birthdate" id="birthdate" onchange="calculateAge()" readonly>
 </div>';
 
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
 <div class="input-group-text">
 <span class="">Age  :</span>
 </div>
 <input type="text" value="' . $age . '" name="age" class="form-input flex-grow" id="age" readonly>
 </div>';
 
-                                    echo "<div class='input input-bordered flex items-center gap-2 mb-3'>
+                                        echo "<div class='input input-bordered flex items-center gap-2 mb-3'>
 <div class='input-group-text'>
 <span class=''>Contact Number   :</span>
 </div>";
-                                    echo "<input value='$contact_no' name='contact_no' class='form-input flex-grow' readonly>
+                                        echo "<input value='$contact_no' name='contact_no' class='form-input flex-grow' readonly>
 </div>";
 
-                                    echo "<div class='input-bordered flex items-center gap-2 mb-3'>
+                                        echo "<div class='input-bordered flex items-center gap-2 mb-3'>
 <label class='input-group-text' for='type'>Gender   :</label>
 <select class='select input-bordered select-ghost flex-grow' id='gender' name='gender' style='pointer-events: none'>";
-                                    echo "<option value='Male'";
-                                    if ($gender == 'Male') echo ' selected';
-                                    echo ">Male</option>";
-                                    echo "<option value='Female'";
-                                    if ($gender == 'Female') echo ' selected';
-                                    echo ">Female</option>";
-                                    echo "<option value='Others'";
-                                    if ($gender == 'Other/s') echo ' selected';
-                                    echo ">Other/s</option>";
-                                    echo "</select>
+                                        echo "<option value='Male'";
+                                        if ($gender == 'Male') echo ' selected';
+                                        echo ">Male</option>";
+                                        echo "<option value='Female'";
+                                        if ($gender == 'Female') echo ' selected';
+                                        echo ">Female</option>";
+                                        echo "<option value='Others'";
+                                        if ($gender == 'Other/s') echo ' selected';
+                                        echo ">Other/s</option>";
+                                        echo "</select>
 </div>";
 
-                                    echo '<div class="input-bordered flex items-center gap-2 mb-3">
+                                        echo '<div class="input-bordered flex items-center gap-2 mb-3">
 <label class="input-group-text" for="">Specialty    :</label>';
-                                    echo "<select class='select input-bordered select-ghost flex-grow' id='specialty' name='specialty' style='pointer-events: none'>";
-                                    $sql5 = "SELECT * FROM `specialties`";
-                                    $result5 = $db->query($sql5);
+                                        echo "<select class='select input-bordered select-ghost flex-grow' id='specialty' name='specialty' style='pointer-events: none'>";
+                                        $sql5 = "SELECT * FROM `specialties`";
+                                        $result5 = $db->query($sql5);
 
-                                    if ($result5 && $result5->num_rows > 0) {
-                                        while ($specialty_row = $result5->fetch_assoc()) {
-                                            $specialty_id = $specialty_row['id'];
-                                            $specialty_name = $specialty_row['specialty'];
-                                            $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
-                                            echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
+                                        if ($result5 && $result5->num_rows > 0) {
+                                            while ($specialty_row = $result5->fetch_assoc()) {
+                                                $specialty_id = $specialty_row['id'];
+                                                $specialty_name = $specialty_row['specialty'];
+                                                $selected = ($row['specialty'] == $specialty_id) ? "selected" : "";
+                                                echo "<option value='$specialty_id' $selected>" . htmlspecialchars($specialty_name) . "</option>";
+                                            }
                                         }
-                                    }
-                                    echo "</select></div>";
-                                    echo '<div class=" input-bordered flex items-center gap-2 mb-3">
+                                        echo "</select></div>";
+                                        echo '<div class=" input-bordered flex items-center gap-2 mb-3">
 <div class="input-group-text">
-<span class="">Remarks  :</span>
+<label class="">Remarks  :</label>
 </div>
 <textarea class="input-bordered textarea flex-grow" id="remarks" name="remarks" aria-label="With textarea">' . $remarks . '</textarea>
 </div>';
 
 
-                                    echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
+                                        echo '<div class="input input-bordered flex items-center gap-2 mb-3 bg-gray-100">
 <div class="input-group-text">
 <span class="">Schedule Date and Time: </span>';
-                                    if (!empty($schedule)) {
-                                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule' value=' " . $schedule .  "'>";
-                                    } else {
-                                        echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule'>";
-                                    }
-                                    echo "</div></div>";
+                                        if (!empty($schedule)) {
+                                            echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule' value='" . date('Y-m-d\TH:i', strtotime($row['schedule'])) . "'>";
+                                        } else {
+                                            echo "<input type='datetime-local' class='form-input flex-grow' style='font-size: 16px' name='schedule' id='schedule'>";
+                                        }
+                                        echo "</div></div>";
 
-                                    echo '<script>
+                                        echo '<script>
 var startDatetimeInput = document.getElementById("schedule");
 var startDatetimeValue = ' . json_encode(!empty($schedule) ? htmlspecialchars($schedule) : "") . ';
 if (startDatetimeValue !== "") {
@@ -223,11 +226,14 @@ startDatetimeInput.disabled = true;
 startDatetimeInput.disabled = false;
 }
 </script>';
+                                    }
                                 }
-                            }
-                                    ?>
+                                        ?>
                                         </div>
 
+                                        <!-- </div> -->
+
+                                        </form>
 
 
 

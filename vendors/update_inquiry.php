@@ -170,16 +170,10 @@
         startDatetimeInput.disabled = false;
     }
 </script>';
-
-
-
-
-                    echo '
-                                <div class="text-center mt-4">
+                    echo '<div class="text-center mt-4">
                      <button type="submit" class="btn" name="action" value="add"><i class="fas fa-save"></i>          SAVE</button>
                     <a class="btn" href="list_inquiries.php"><i class="fa fa-window-close"></i>          CANCEL</a>
-                </div>
-                            </form> ';
+                </div></form> ';
                 }
             }
             ?>
@@ -218,7 +212,6 @@
                 window.location.href = 'list_inquiries.php';
             },
             error: function(xhr, status, error) {
-                // Handle errors
                 console.error(xhr.responseText);
                 Swal.fire({
                     icon: 'error',

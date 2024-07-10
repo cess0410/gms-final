@@ -34,16 +34,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $rescheduled_id = $_POST["rescheduled_id"];
     $follow_up = $id;
 
-    // Insert data into tblinquiry
     $sql = "INSERT INTO tblinquiry (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, schedule, status, cancelled, attended, doctor, diagnose, end_datetime, rescheduled, rescheduled_id, follow_up)
             VALUES ('$consultdate', '$consultmonth', '$consultyear','$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$schedule', '$status', '$cancelled', '$attended', '$doctor', '$diagnose', '$end_datetime', '$rescheduled', '$rescheduled_id', '$follow_up')";
 
     if ($db->query($sql) === TRUE) {
-        // Log the insert operation
-        $insert_id = $db->insert_id; // Get the last insert id
+        $insert_id = $db->insert_id;
         $user_id = $_SESSION['iuid'];
 
-        // Insert data into tblinquiry_logs
         $log_sql = "INSERT INTO tblinquiry_logs (consultdate, consultmonth, consultyear, receiver, mode, endorsement, name, type, birthdate, age, gender, contact_no, specialty, remarks, schedule, status, cancelled, attended, doctor, diagnose, end_datetime, rescheduled, rescheduled_id, follow_up, inquiry_id, user_id)
                     VALUES ('$consultdate', '$consultmonth', '$consultyear', '$receiver', '$mode', '$endorsement', '$name', '$type', '$birthdate', '$age', '$gender', '$contact_no', '$specialty', '$remarks', '$schedule', '$status', '$cancelled', '$attended', '$doctor', '$diagnose', '$end_datetime', '$rescheduled', '$rescheduled_id', '$follow_up', '$insert_id', '$user_id')";
         if ($db->query($log_sql) === TRUE) {
